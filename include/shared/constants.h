@@ -1,0 +1,36 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+// TODO: Definir constantes para o sistema operacional
+
+// Número máximo de processos por fila
+#define MAX_PROCESSES_PER_QUEUE 1000
+
+// Número total de blocos de memória
+#define TOTAL_MEMORY_BLOCKS 1024
+
+// Número de blocos reservados para processos de tempo real
+#define REAL_TIME_MEMORY_BLOCKS 64
+
+// Número de blocos compartilhados para processos de usuário
+#define USER_MEMORY_BLOCKS (TOTAL_MEMORY_BLOCKS - REAL_TIME_MEMORY_BLOCKS)
+
+// Quantum de tempo para processos de usuário (em milissegundos)
+#define USER_PROCESS_QUANTUM 1
+
+// Prioridades de processos
+#define PRIORITY_REAL_TIME 0
+#define PRIORITY_USER_1 1
+#define PRIORITY_USER_2 2
+#define PRIORITY_USER_3 3
+
+// Número de filas de prioridade
+#define NUMBER_OF_PRIORITY_QUEUES 4
+
+// Número de dispositivos E/S
+#define NUMBER_OF_SCANNERS 1
+#define NUMBER_OF_PRINTERS 2
+#define NUMBER_OF_MODEMS 1
+#define NUMBER_OF_SATA_DRIVES 2
+
+#endif // CONSTANTS_H

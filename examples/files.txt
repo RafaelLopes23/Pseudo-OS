@@ -1,0 +1,10 @@
+<total_blocos_disco>
+1024
+<num_segmentos_ocupados>
+5
+arquivo1.txt, 0, 10
+arquivo2.txt, 10, 5
+arquivo3.txt, 15, 8
+arquivo4.txt, 23, 12
+arquivo5.txt, 35, 20
+<ID_processo>, <operacao>, <nome_arquivo>, [<qtd_blocos_se_criar>]
