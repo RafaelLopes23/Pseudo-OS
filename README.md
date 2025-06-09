@@ -1,60 +1,56 @@
-# Pseudo Operating System
+# Pseudo Sistema Operacional
 
-This project implements a pseudo-operating system in pure C, designed for educational purposes. The system is structured to allow collaborative development and includes modules for process management, memory management, I/O resource management, and file system operations.
+Este projeto implementa um pseudo-sistema operacional em C puro, projetado para fins educacionais. O sistema é estruturado para permitir desenvolvimento colaborativo e inclui módulos para gerenciamento de processos, gerenciamento de memória, gerenciamento de recursos de E/S e operações do sistema de arquivos.
 
-## Project Structure
+## Estrutura do Projeto
 
-The project is organized into several directories:
+O projeto está organizado em vários diretórios:
 
-- **src/**: Contains the source code for the operating system.
-  - **core/**: Core functionalities including the main entry point and system-wide definitions.
-  - **process/**: Manages processes, including scheduling and dispatching.
-  - **memory/**: Handles memory allocation and I/O resource management.
-  - **filesystem/**: Manages file system operations and file handling.
+- **src/**: Contém o código-fonte do sistema operacional.
+  - **core/**: Funcionalidades principais incluindo o ponto de entrada principal e definições do sistema.
+  - **process/**: Gerencia processos, incluindo escalonamento e despacho.
+  - **memory/**: Trata da alocação de memória e gerenciamento de recursos de E/S.
+  - **filesystem/**: Gerencia operações do sistema de arquivos e manipulação de arquivos.
 
-- **include/**: Contains shared header files with constants and error definitions.
+- **include/**: Contém arquivos de cabeçalho compartilhados com constantes e definições de erro.
 
-- **tests/**: Contains unit tests for each module to ensure functionality and reliability.
+- **tests/**: Contém testes unitários para cada módulo para garantir funcionalidade e confiabilidade.
 
-- **examples/**: Provides example input files for testing the system.
+- **examples/**: Fornece arquivos de entrada de exemplo para testar o sistema.
 
-- **Makefile**: Contains build instructions for compiling the project.
+- **Makefile**: Contém instruções de compilação para construir o projeto.
 
-- **.gitignore**: Specifies files and directories to be ignored by Git.
+- **.gitignore**: Especifica arquivos e diretórios a serem ignorados pelo Git.
 
-## Building the Project
+## Compilando o Projeto
 
-To build the project, navigate to the root directory of the project and run:
+Para compilar o projeto, navegue até o diretório raiz do projeto e execute:
 
 ```
 make
 ```
 
-This will compile all modules and create the executable for the pseudo-operating system.
+Isso compilará todos os módulos e criará o executável para o pseudo-sistema operacional.
 
-## Running the System
+## Executando o Sistema
 
-After building the project, you can run the system using the following command:
+Após compilar o projeto, você pode executar o sistema usando o seguinte comando:
 
 ```
 ./pseudo-os
 ```
 
-Make sure to provide the necessary input files (`processes.txt` and `files.txt`) in the appropriate format as specified in the project documentation.
+Certifique-se de fornecer os arquivos de entrada necessários (`processes.txt` e `files.txt`) no formato apropriado conforme especificado na documentação do projeto.
 
-## Contributing
+## Contribuindo
 
-This project is open for contributions. Please follow the guidelines below:
+Este projeto está aberto para contribuições. Por favor, siga as diretrizes abaixo:
 
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes and commit them.
-4. Push your branch and create a pull request.
+1. Faça um fork do repositório.
+2. Crie uma nova branch para sua funcionalidade ou correção de bug.
+3. Faça suas alterações e commit-as.
+4. Push sua branch e crie um pull request.
 
-## License
+## Licença
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
-## Acknowledgments
-
-Thanks to all contributors and educators who have provided guidance and support in the development of this project.
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo LICENSE para mais detalhes.
