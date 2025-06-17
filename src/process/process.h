@@ -1,25 +1,22 @@
-// src/process/process.h
-
 #ifndef PROCESS_H
 #define PROCESS_H
 
 #include "../core/types.h"
 
-// Estrutura do Bloco de Controle de Processo (PCB)
-typedef struct {
-    int pid;                // Identificador do processo
-    int priority;          // Prioridade do processo
-    int state;             // Estado do processo (pronto, em execução, bloqueado)
-    int cpu_time;          // Tempo de CPU consumido
-    int memory_blocks;     // Blocos de memória alocados
-    // TODO: [Pessoa 1] Adicionar outros campos necessários para o PCB
-} PCB;
-
 // Funções relacionadas ao gerenciamento de processos
-PCB* create_process(int priority, int memory_blocks); // Cria um novo processo
-void destroy_process(PCB* process);                   // Destrói um processo existente
-void print_process_info(PCB* process);                // Imprime informações do processo
-
-// TODO: [Pessoa 1] Declarar outras funções necessárias para gerenciamento de processos
+void init_process();
+PCB* create_process(int priority, int cpu_time, int memory_blocks, 
+                   int start_time, int printer_code, int scanner_needed, 
+                   int modem_needed, int disk_code);
+void print_process_info(PCB* process);
+void terminate_process(PCB* process);
+void destroy_process(PCB* process);
+void execute_process_instruction(PCB* process);
+int is_process_finished(PCB* process);
+void list_processes();
+PCB* get_process_by_pid(int pid);
+int get_process_count();
+int has_active_processes();
+int load_processes_from_file(const char* filename);
 
 #endif // PROCESS_H
