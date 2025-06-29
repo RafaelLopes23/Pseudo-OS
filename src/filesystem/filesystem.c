@@ -7,8 +7,53 @@
 // - Verificação de espaço disponível no disco
 // Dependências: filesystem.h, fileops.h
 
+
 #include "filesystem.h"
 #include "fileops.h"
+#include <string.h>
+#include <stdio.h>
+
+// Estrutura do APFS simulado
+typedef struct {
+    File files[MAX_FILES];
+    uint8_t disk_blocks[TOTAL_BLOCKS][BLOCK_SIZE];
+    int used_blocks;
+} APFS;
+
+static APFS fs;
+
+// Inicialização do sistema de arquivos
+void init_filesystem() {
+    memset(&fs, 0, sizeof(APFS));
+    fs.used_blocks = 0;
+    printf("Sistema de arquivos inicializado.\n");
+}
+
+// Verifica espaço disponível
+int check_disk_space() {
+    return MAX_MEMORY_BLOCKS - fs.used_blocks;
+}
+
+// Lista arquivos
+void list_files() {
+    printf("=== ARQUIVOS ===\n");
+    for (int i = 0; i < MAX_FILES; i++) {
+        if (fs.files[i].name[0] != '\0') {
+            printf("%s (Blocos: %d)\n", fs.files[i].name, fs.files[i].block_count);
+        }
+    }
+}
+
+// Verifica ocupação do disco
+void check_disk_usage() {
+    printf("Uso do disco: %d/%d blocos (%.1f%%)\n",
+           fs.used_blocks, TOTAL_BLOCKS,
+           (float)fs.used_blocks / TOTAL_BLOCKS * 100);
+}
+
+
+
+/*
 
 // Função para inicializar o sistema de arquivos
 void init_filesystem() {
