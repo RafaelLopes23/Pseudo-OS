@@ -1,10 +1,13 @@
 // filesystem.h
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
-
-// TODO: [Pessoa 3] Implementar funções para gerenciamento do sistema de arquivos
-
 #include <stdint.h>
+
+// Constantes
+#define MAX_FILES 1000
+#define TOTAL_BLOCKS 1024
+#define BLOCK_SIZE 4096
+#define MAX_FILENAME_LEN 255
 
 // Estrutura que representa um arquivo no sistema de arquivos
 typedef struct {

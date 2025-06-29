@@ -2,30 +2,18 @@
 #ifndef RESOURCES_H
 #define RESOURCES_H
 
-#include <semaphore.h> // <--- INCLUIR BIBLIOTECA
+// TODO: [Pessoa 2] Implementar gerenciamento de recursos E/S
 
 // Estruturas de dados para gerenciamento de recursos
 typedef struct {
-    // Os contadores agora são controlados pelos semáforos,
-    // mas podem ser mantidos para fins de depuração ou lógica adicional se necessário.
-    int scanner_available;
-    int printers_available;
-    int modem_available;
-    int sata_drives_available;
-
-    // Semáforos para garantir acesso exclusivo e contagem
-    sem_t sem_scanner;
-    sem_t sem_printers;
-    sem_t sem_modem;
-    sem_t sem_sata_drives;
-
+    int scanner_available; // 1 se disponível, 0 se em uso
+    int printers_available; // Contador de impressoras disponíveis
+    int modem_available; // 1 se disponível, 0 se em uso
+    int sata_drives_available; // Contador de drives SATA disponíveis
 } IOResources;
 
 // Função para inicializar os recursos de E/S
 void init_io_resources(IOResources *resources);
-
-// Função para destruir os semáforos ao final do programa
-void destroy_io_resources(IOResources *resources);
 
 // Função para alocar um recurso de E/S
 int allocate_io_resource(IOResources *resources, const char *resource_type);
