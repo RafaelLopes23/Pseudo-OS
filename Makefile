@@ -7,16 +7,9 @@ INCLUDE_DIR = include
 TEST_DIR = tests
 EXAMPLES_DIR = examples
 
-# choose rm or del based on OS
-ifdef OS
-  ifeq ($(OS),Windows_NT)
-    RM = del /Q
-  else
-    RM = rm -f
-  endif
-else
-  RM = rm -f
-endif
+# Windows commands
+RM = del /Q /F
+EXE = .exe
 
 # Source files (apenas .c)
 CORE_SRC = $(SRC_DIR)/core/main.c
@@ -31,7 +24,7 @@ ALL_SRC = $(CORE_SRC) $(PROCESS_SRC) $(MEMORY_SRC) $(FILESYSTEM_SRC)
 OBJ = $(ALL_SRC:.c=.o)
 
 # Target for the final executable
-TARGET = pseudo-os
+TARGET = pseudo-os$(EXE)
 
 # Default target
 all: $(TARGET)
@@ -46,11 +39,22 @@ $(TARGET): $(OBJ)
 
 # Test individual modules
 test_process:
-	$(CC) $(CFLAGS) -o test_process.exe $(TEST_DIR)/test_process.c $(PROCESS_SRC)
+	$(CC) $(CFLAGS) -I./src -o test_process$(EXE) $(TEST_DIR)/test_process.c $(PROCESS_SRC)
 
-# Clean up build files
+test_memory:
+	$(CC) $(CFLAGS) -I./src -o test_memory$(EXE) $(TEST_DIR)/test_memory.c $(MEMORY_SRC)
+
+test_filesystem:
+	$(CC) $(CFLAGS) -I./src -o test_filesystem$(EXE) $(TEST_DIR)/test_filesystem.c $(FILESYSTEM_SRC)
+
+# Clean up build files (Windows)
 clean:
-	$(RM) $(OBJ) $(TARGET) test_process.exe
+	if exist *.o $(RM) *.o
+	if exist *.exe $(RM) *.exe
+	if exist $(TARGET) $(RM) $(TARGET)
+	if exist test_process$(EXE) $(RM) test_process$(EXE)
+	if exist test_memory$(EXE) $(RM) test_memory$(EXE)
+	if exist test_filesystem$(EXE) $(RM) test_filesystem$(EXE)
 
 # Phony targets
-.PHONY: all test_process clean
+.PHONY: all test_process test_memory test_filesystem clean

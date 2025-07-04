@@ -4,12 +4,6 @@
 #include <stdint.h>
 #include "../../include/shared/constants.h"
 
-// Definição de constantes
-#define MAX_PROCESSES 1000
-#define MEMORY_BLOCKS 1024
-#define REAL_TIME_BLOCKS 64
-#define USER_BLOCKS (MEMORY_BLOCKS - REAL_TIME_BLOCKS)
-
 // Enum para prioridades de processos
 typedef enum {
     PRIORITY_REAL_TIME = 0,
@@ -49,7 +43,7 @@ typedef struct {
 
 // Estrutura de fila de processos
 typedef struct {
-    PCB* processes[MAX_PROCESSES]; // Array de ponteiros para processos
+    PCB* processes[MAX_PROCESSES_PER_QUEUE]; // Array de ponteiros para processos
     int front;                      // Inicio da fila
     int rear;                       // Final da Fila
     int count;                      // Contador de processos na fila

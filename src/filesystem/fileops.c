@@ -89,3 +89,4 @@ int write_file(const char *filename, const char *data, int size) {
     // Implementar aqui: lógica para escrever em um arquivo no sistema de arquivos
     return 0;  // placeholder
 }
+    */

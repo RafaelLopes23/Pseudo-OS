@@ -3,6 +3,7 @@
 #include "../../include/shared/constants.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 static int next_pid = 0; // Contador global de PIDs
 static PCB* process_table[MAX_PROCESSES_PER_QUEUE * NUMBER_OF_PRIORITY_QUEUES]; // Tabela global de processos
