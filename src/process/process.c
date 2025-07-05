@@ -1,9 +1,13 @@
 #include "process.h"
+#include "scheduler.h"
 #include "../core/types.h"
 #include "../../include/shared/constants.h"
+#include "../memory/resources.h"
+#include "../memory/memory.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 
 static int next_pid = 0; // Contador global de PIDs
 static PCB* process_table[MAX_PROCESSES_PER_QUEUE * NUMBER_OF_PRIORITY_QUEUES]; // Tabela global de processos
@@ -22,8 +26,8 @@ void init_process() {
 
 // Função para criar um novo processo
 PCB* create_process(int priority, int cpu_time, int memory_blocks, 
-                   int start_time, int printer_code, int scanner_needed, 
-                   int modem_needed, int disk_code) {
+                    int start_time, int printer_code, int scanner_needed, 
+                    int modem_needed, int disk_code) {
     PCB* process = (PCB*)malloc(sizeof(PCB));
     if (!process) return NULL;
 
@@ -102,14 +106,73 @@ int load_processes_from_file(const char* filename) {
                                         modem_needed, disk_code);
             
             if (process) {
-                printf("Processo criado: PID=%d, Prioridade=%d, CPU=%d, Memória=%d\n", 
-                       process->pid, process->priority, process->total_cpu_time, process->memory_blocks);
                 
-                // TODO: [Pessoa 2] Integração com gerenciador de memória
-                // TODO: [Pessoa 2] Verificar recursos E/S disponíveis
+                int resources_ok = 1; // Flag para controlar a disponibilidade de todos os recursos
+                int is_real_time = (process->priority == 0);
                 
-                // Por enquanto, adiciona direto à fila (integração será feita depois)
-                processes_loaded++;
+                // ETAPA 1: VERIFICAR DISPONIBILIDADE APENAS DOS RECURSOS SOLICITADOS
+                // A verificação para imediatamente no primeiro recurso que falhar.
+                
+                // Verifica memória
+                if (resources_ok && process->memory_blocks > 0) {
+                    if (!check_memory_availability(process->memory_blocks, is_real_time)) {
+                        resources_ok = 0;
+                        printf("-> FALHA: Memória insuficiente para o processo PID %d.\n", process->pid);
+                    }
+                }
+                
+                // Verifica recursos de E/S (apenas para processos de usuário)
+                if (resources_ok && !is_real_time) {
+                    // Verifica Scanner
+                    if (process->scanner_needed && !check_io_resource_availability(&io_resources, "scanner")) {
+                        resources_ok = 0;
+                        printf("-> FALHA: Scanner indisponível para o processo PID %d.\n", process->pid);
+                    }
+                    // Verifica Impressora
+                    if (resources_ok && process->printer_code > 0 && !check_io_resource_availability(&io_resources, "printer")) {
+                        resources_ok = 0;
+                        printf("-> FALHA: Impressora indisponível para o processo PID %d.\n", process->pid);
+                    }
+                    // Verifica Modem
+                    if (resources_ok && process->modem_needed && !check_io_resource_availability(&io_resources, "modem")) {
+                        resources_ok = 0;
+                        printf("-> FALHA: Modem indisponível para o processo PID %d.\n", process->pid);
+                    }
+                    // Verifica Disco SATA
+                    if (resources_ok && process->disk_code > 0 && !check_io_resource_availability(&io_resources, "sata")) {
+                        resources_ok = 0;
+                        printf("-> FALHA: Disco SATA indisponível para o processo PID %d.\n", process->pid);
+                    }
+                }
+                
+                // ETAPA 2: ALOCAR RECURSOS SE TODOS ESTIVEREM DISPONÍVEIS
+                if (resources_ok) {
+                    printf("-> SUCESSO: Recursos disponíveis para PID %d. Alocando...\n", process->pid);
+                    
+                    // Aloca memória, se solicitada
+                    if (process->memory_blocks > 0) {
+                        process->memory_offset = allocate_memory(process->memory_blocks, is_real_time);
+                    }
+                    
+                    // Aloca E/S, se solicitado (e não for tempo real)
+                    if (!is_real_time) {
+                        if (process->scanner_needed) allocate_io_resource(&io_resources, "scanner");
+                        if (process->printer_code > 0) allocate_io_resource(&io_resources, "printer");
+                        if (process->modem_needed) allocate_io_resource(&io_resources, "modem");
+                        if (process->disk_code > 0) allocate_io_resource(&io_resources, "sata");
+                    }
+                    
+                    printf("-> Sucesso: Recursos alocados para o processo PID %d.\n", process->pid);
+                    processes_loaded++;
+                    add_process_to_queue(process);
+                    // TODO: [Pessoa 1] Adicionar 'process' na fila de processos prontos para o escalonador.
+                } else {
+                    // Se algum recurso falhou, o processo é descartado
+                    printf("-> Processo PID %d descartado.\n", process->pid);
+                    // Como a falha ocorreu antes da alocação, basta liberar a estrutura do PCB.
+                    destroy_process(process);
+                }
+                
             } else {
                 printf("Erro: não foi possível criar processo\n");
             }
@@ -127,27 +190,58 @@ int load_processes_from_file(const char* filename) {
 void terminate_process(PCB* process) {
     if (!process) return;
     
+    printf("Processo PID %d terminando a execução.\n", process->pid);
     process->state = PROCESS_TERMINATED;
-    printf("P%d terminando...\n", process->pid);
     
-    // Remove da tabela de processos
-    for (int i = 0; i < process_count; i++) {
-        if (process_table[i] && process_table[i]->pid == process->pid) {
-            // Move o último processo para esta posição
-            process_table[i] = process_table[process_count - 1];
-            process_table[process_count - 1] = NULL;
-            process_count--;
-            break;
-        }
-    }
+    // Chama a função destroy_process para fazer toda a limpeza de forma centralizada
+    destroy_process(process);
 }
 
-// Destruição de processo
 void destroy_process(PCB* process) {
-    if (process) {
-        printf("P%d return SIGINT\n", process->pid);
-        free(process);
+    if (process == NULL) {
+        return;
     }
+
+    printf("-> Liberando recursos do processo PID %d...\n", process->pid);
+    
+    // --- ETAPA 1: LIBERAR RECURSOS DE MEMÓRIA E E/S ---
+    int is_real_time = (process->priority == 0);
+
+    // Desaloca a memória que foi alocada para o processo
+    if (process->memory_offset != -1) { // Só libera se foi alocado
+        free_memory(process->memory_offset, process->memory_blocks);
+    }
+
+    // Desaloca os recursos de E/S (apenas se não for tempo real)
+    if (!is_real_time) {
+        if (process->scanner_needed) release_io_resource(&io_resources, "scanner");
+        if (process->printer_code > 0) release_io_resource(&io_resources, "printer");
+        if (process->modem_needed) release_io_resource(&io_resources, "modem");
+        if (process->disk_code > 0) release_io_resource(&io_resources, "sata");
+    }
+
+    // --- ETAPA 2: REMOVER PROCESSO DA TABELA GLOBAL ---
+    int found = 0;
+    for (int i = 0; i < process_count; i++) {
+        if (process_table[i] && process_table[i]->pid == process->pid) {
+            // Encontrou o processo para remover
+            found = 1;
+        }
+        
+        // Se já encontrou, move todos os processos seguintes uma posição para trás
+        if (found && i + 1 < process_count) {
+            process_table[i] = process_table[i + 1];
+        }
+    }
+    
+    if (found) {
+        process_count--; // Decrementa o contador de processos
+        process_table[process_count] = NULL;
+    }
+
+    // --- ETAPA 3: LIBERAR A ESTRUTURA PCB ---
+    printf("P%d return SIGINT\n", process->pid);
+    free(process);
 }
 
 // Execução de instrução do processo

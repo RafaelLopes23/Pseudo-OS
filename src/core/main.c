@@ -1,45 +1,160 @@
 #include <stdio.h>
-#include <unistd.h>
-#include "system.h"
-#include "types.h"
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h> // Para a função sleep
 
-// adiciona includes para memória, recursos e filesystem
+// Incluindo os cabeçalhos de todos os módulos do sistema
 #include "../filesystem/filesystem.h"
+#include "../filesystem/fileops.h"
 #include "../memory/memory.h"
 #include "../memory/resources.h"
 #include "../process/process.h"
 #include "../process/dispatcher.h"
+#include "../process/scheduler.h"
 
-static int system_initialized = 0;
+
+
+// --- Variáveis Globais do Sistema ---
+// Definidas em seus respectivos módulos e declaradas como 'extern' nos headers
+extern MemoryManager mem_manager;
+extern IOResources io_resources;
+
+
+// --- Funções do Núcleo do Sistema ---
 
 void initialize_system() {
-    if (system_initialized) return;
-
-    init_filesystem();                 // Pessoa 3
-    initialize_memory(&mem_manager);   // Pessoa 2
-    init_io_resources(&io_resources);  // Pessoa 2
-    init_process();                    // Pessoa 1
-    init_scheduler();                  // Pessoa 1
-
-    system_initialized = 1;
-    printf("Sistema inicializado\n");
-}
-
-void start_main_loop() {
-    while (1) {
-        PCB* p = dispatch_process();
-        if (p) run_current_process();
-        usleep(100000);
-    }
+    printf("Inicializando o pseudo-SO...\n");
+    initialize_memory(&mem_manager);
+    init_io_resources(&io_resources);
+    init_process();
+    init_scheduler();
+    init_filesystem();
+    printf("Sistema inicializado com sucesso.\n\n");
 }
 
 void shutdown_system() {
-    printf("Encerrando sistema...\n");
-    system_initialized = 0;
+    printf("\nDesligando o pseudo-SO...\n");
+    printf("Sistema desligado.\n");
 }
 
-int main() {
+void start_main_loop() {
+    printf("--- Iniciando Loop Principal de Execução ---\n");
+    while (has_active_processes()) {
+        PCB* current_process = dispatch_process();
+        if (current_process) {
+            run_current_process();
+        } else {
+            sleep(4); 
+            // apply_aging();
+        }
+    }
+    printf("--- Loop Principal de Execução Terminado ---\n\n");
+}
+
+
+// --- Lógica para o Sistema de Arquivos (Responsabilidade da Pessoa 3) ---
+
+void process_filesystem_operations(const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        fprintf(stderr, "Erro: Não foi possível abrir o arquivo de sistema de arquivos %s\n", filename);
+        return;
+    }
+
+    char line[256];
+    int total_disk_blocks, num_initial_files;
+
+    fgets(line, sizeof(line), file);
+    sscanf(line, "%d", &total_disk_blocks);
+
+    fgets(line, sizeof(line), file);
+    sscanf(line, "%d", &num_initial_files);
+
+    for (int i = 0; i < num_initial_files; i++) {
+        char name[MAX_FILENAME_LEN];
+        int first_block, num_blocks;
+        fgets(line, sizeof(line), file);
+        sscanf(line, "%[^,], %d, %d", name, &first_block, &num_blocks);
+        create_file(name, num_blocks);
+    }
+    
+    printf("Estado inicial do disco carregado.\n");
+    list_files();
+
+    while (fgets(line, sizeof(line), file)) {
+        int process_id, op_code, num_blocks;
+        char file_name[MAX_FILENAME_LEN];
+
+        int parsed = sscanf(line, "%d, %d, %[^,], %d", &process_id, &op_code, file_name, &num_blocks);
+
+        if (parsed < 3) continue;
+
+        PCB* p = get_process_by_pid(process_id);
+        if (!p) {
+            printf("Operação Ignorada: Processo com PID %d não existe.\n", process_id);
+            continue;
+        }
+
+        if (op_code == 0) {
+            if (create_file(file_name, num_blocks) == 0) {
+                printf("Operação Sucesso: Processo %d criou o arquivo %s.\n", process_id, file_name);
+            } else {
+                printf("Operação Falha: Processo %d não pôde criar o arquivo %s (sem espaço ou erro).\n", process_id, file_name);
+            }
+        } else if (op_code == 1) {
+            sscanf(line, "%d, %d, %s", &process_id, &op_code, file_name);
+            if (delete_file(file_name) == 0) {
+                 printf("Operação Sucesso: Processo %d deletou o arquivo %s.\n", process_id, file_name);
+            } else {
+                 printf("Operação Falha: Processo %d não pôde deletar o arquivo %s (não encontrado).\n", process_id, file_name);
+            }
+        }
+    }
+
+    fclose(file);
+}
+
+void print_disk_map() {
+    printf("\n--- Estado Final do Disco ---\n");
+    list_files();
+    check_disk_usage();
+}
+
+
+// --- Ponto de Entrada Principal do Programa ---
+
+int main(int argc, char *argv[]) {
+    // 1. Validar Argumentos
+    if (argc != 3) {
+        fprintf(stderr, "Uso: %s <arquivo_de_processos> <arquivo_de_filesystem>\n", argv[0]);
+        return 1;
+    }
+    const char* processes_file = argv[1];
+    const char* filesystem_file = argv[2];
+
+    // 2. Inicializar Módulos
     initialize_system();
+
+    // 3. Carregar Processos
+    int num_processes = load_processes_from_file(processes_file);
+    if (num_processes <= 0) {
+        fprintf(stderr, "Nenhum processo foi carregado. Encerrando.\n");
+        shutdown_system();
+        return 1;
+    }
+    
+    // 4. Iniciar Loop de Execução
     start_main_loop();
+    
+    // 5. Processar Operações de Arquivo
+    printf("\n--- Processando Operações de Arquivo ---\n");
+    process_filesystem_operations(filesystem_file);
+
+    // 6. Imprimir Estado Final do Disco
+    print_disk_map();
+
+    // 7. Desligar Sistema
+    shutdown_system();
+
     return 0;
 }

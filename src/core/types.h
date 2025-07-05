@@ -28,7 +28,7 @@ typedef struct {
     uint32_t cpu_time;          // Tempo de CPU utilizado
     uint32_t total_cpu_time;    // Tempo total de CPU necessário 
     uint32_t memory_blocks;      // Blocos de memória alocados
-    uint32_t memory_offset;     // Offset da memória alocada
+    int memory_offset;     // Offset da memória alocada
     int start_time;             // Tempo da inicialização
 
     // Recursos requisitados de E/S
