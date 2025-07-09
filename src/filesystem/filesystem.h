@@ -28,4 +28,8 @@ void init_filesystem();
 int check_disk_space();
 void list_files();
 void check_disk_usage();
+// Função para imprimir mapa de ocupação por bloco
+void print_disk_block_map();
+// Cria um arquivo inicial em posição específica (respeita o first_block fornecido)
+int create_initial_file(const char *filename, uint32_t first_block, uint32_t blocks);
 #endif // FILESYSTEM_H

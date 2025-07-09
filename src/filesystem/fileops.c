@@ -59,6 +59,34 @@ int write_file(const char *filename, const char *data, int size) {
     return -1;
 }
 
+// Cria arquivo inicial usando posição fixa e verifica sobreposição
+int create_initial_file(const char *filename, uint32_t first_block, uint32_t blocks) {
+    if (strlen(filename) > MAX_FILENAME_LEN || blocks == 0 || first_block + blocks > TOTAL_BLOCKS) {
+        return -1;
+    }
+    // Verifica sobreposição com arquivos existentes
+    for (int i = 0; i < MAX_FILES; i++) {
+        if (fs.files[i].name[0] != '\0') {
+            uint32_t start = fs.files[i].first_block;
+            uint32_t count = fs.files[i].block_count;
+            if (!(first_block + blocks <= start || first_block >= start + count)) {
+                return -1;
+            }
+        }
+    }
+    // Achar slot livre e inserir arquivo
+    for (int i = 0; i < MAX_FILES; i++) {
+        if (fs.files[i].name[0] == '\0') {
+            strncpy(fs.files[i].name, filename, MAX_FILENAME_LEN);
+            fs.files[i].first_block = first_block;
+            fs.files[i].block_count = blocks;
+            fs.used_blocks += blocks;
+            return 0;
+        }
+    }
+    return -1;
+}
+
 
 
 /*

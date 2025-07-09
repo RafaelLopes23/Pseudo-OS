@@ -12,6 +12,7 @@
 #include "../process/dispatcher.h"
 #include "../process/scheduler.h"
 
+static int processes_loaded_global = 0;  // total de processos carregados
 
 
 // --- Variáveis Globais do Sistema ---
@@ -44,15 +45,12 @@ void start_main_loop() {
         if (current_process) {
             run_current_process();
         } else {
-            sleep(4); 
-            // apply_aging();
+            sleep(4);
+            apply_aging();  // Aplica aging para evitar starvation quando sem processos prontos
         }
     }
     printf("--- Loop Principal de Execução Terminado ---\n\n");
 }
-
-
-// --- Lógica para o Sistema de Arquivos (Responsabilidade da Pessoa 3) ---
 
 void process_filesystem_operations(const char* filename) {
     FILE* file = fopen(filename, "r");
@@ -75,38 +73,37 @@ void process_filesystem_operations(const char* filename) {
         int first_block, num_blocks;
         fgets(line, sizeof(line), file);
         sscanf(line, "%[^,], %d, %d", name, &first_block, &num_blocks);
-        create_file(name, num_blocks);
+        // Cria arquivo inicial na posição especificada
+        if (create_initial_file(name, first_block, num_blocks) != 0) {
+            fprintf(stderr, "Erro: não foi possível criar arquivo inicial %s (blocos %d-%d)\n",
+                    name, first_block, first_block + num_blocks - 1);
+        }
     }
-    
-    printf("Estado inicial do disco carregado.\n");
-    list_files();
 
     while (fgets(line, sizeof(line), file)) {
         int process_id, op_code, num_blocks;
         char file_name[MAX_FILENAME_LEN];
-
         int parsed = sscanf(line, "%d, %d, %[^,], %d", &process_id, &op_code, file_name, &num_blocks);
-
         if (parsed < 3) continue;
-
-        PCB* p = get_process_by_pid(process_id);
-        if (!p) {
-            printf("Operação Ignorada: Processo com PID %d não existe.\n", process_id);
+        // Verifica se PID foi carregado originalmente
+        if (!process_was_loaded(process_id)) {
+            printf("Operação Ignorada: Processo com PID %d não faz parte do conjunto inicial.\n", process_id);
             continue;
         }
 
-        if (op_code == 0) {
+        if (op_code == 0 && parsed == 4) {
+            // criação de arquivo
             if (create_file(file_name, num_blocks) == 0) {
                 printf("Operação Sucesso: Processo %d criou o arquivo %s.\n", process_id, file_name);
             } else {
                 printf("Operação Falha: Processo %d não pôde criar o arquivo %s (sem espaço ou erro).\n", process_id, file_name);
             }
         } else if (op_code == 1) {
-            sscanf(line, "%d, %d, %s", &process_id, &op_code, file_name);
+            // deleção de arquivo
             if (delete_file(file_name) == 0) {
-                 printf("Operação Sucesso: Processo %d deletou o arquivo %s.\n", process_id, file_name);
+                printf("Operação Sucesso: Processo %d deletou o arquivo %s.\n", process_id, file_name);
             } else {
-                 printf("Operação Falha: Processo %d não pôde deletar o arquivo %s (não encontrado).\n", process_id, file_name);
+                printf("Operação Falha: Processo %d não pôde deletar o arquivo %s (não encontrado).\n", process_id, file_name);
             }
         }
     }
@@ -118,6 +115,8 @@ void print_disk_map() {
     printf("\n--- Estado Final do Disco ---\n");
     list_files();
     check_disk_usage();
+    // Imprime o mapa de ocupação por bloco após o resumo
+    print_disk_block_map();
 }
 
 
@@ -132,6 +131,16 @@ int main(int argc, char *argv[]) {
     const char* processes_file = argv[1];
     const char* filesystem_file = argv[2];
 
+    // Abrir arquivo de log
+    if (!freopen("log.txt", "w", stdout)) {
+        perror("Erro ao criar log.txt");
+        return 1;
+    }
+    if (!freopen("log.txt", "a", stderr)) {
+        perror("Erro ao redirecionar stderr para log.txt");
+        return 1;
+    }
+
     // 2. Inicializar Módulos
     initialize_system();
 
@@ -142,10 +151,11 @@ int main(int argc, char *argv[]) {
         shutdown_system();
         return 1;
     }
-    
+    processes_loaded_global = num_processes;
+
     // 4. Iniciar Loop de Execução
     start_main_loop();
-    
+
     // 5. Processar Operações de Arquivo
     printf("\n--- Processando Operações de Arquivo ---\n");
     process_filesystem_operations(filesystem_file);
