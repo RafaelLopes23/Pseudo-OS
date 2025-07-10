@@ -9,7 +9,7 @@
 #define MAX_FILENAME_LEN 255
 
 typedef struct {
-    char name[256];
+    char name[MAX_FILENAME_LEN];
     uint32_t first_block;
     uint32_t block_count;
 } File;
@@ -17,6 +17,8 @@ typedef struct {
 // ====================== adicionar aqui ======================
 typedef struct {
     File files[MAX_FILES];
+    uint32_t total_blocks;
+    uint8_t block_map[TOTAL_BLOCKS];
     uint8_t disk_blocks[TOTAL_BLOCKS][BLOCK_SIZE];
     int used_blocks;
 } APFS;
