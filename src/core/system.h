@@ -8,6 +8,8 @@
 #define MAX_MEMORY_BLOCKS 1024
 #define IO_EVENT_BUFFER_SIZE 64
 
+extern int debug_mode;
+
 // Funções principais do sistema
 void initialize_system();
 void start_main_loop();

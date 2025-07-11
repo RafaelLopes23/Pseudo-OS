@@ -4,6 +4,7 @@
 #include "process.h"
 
 // Funções do escalonador
+
 void init_scheduler();
 PCB* schedule_real_time_process();
 PCB* schedule_user_process();

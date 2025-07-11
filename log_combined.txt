@@ -1,0 +1,153 @@
+Inicializando o pseudo-SO...
+Módulo de processos inicializado.
+Sistema inicializado com sucesso.
+
+Carregando processos do arquivo: examples2/combined.txt
+Total de processos lidos para a fila de espera: 7
+
+--- Iniciando Loop Principal de Execução ---
+-> Recursos disponíveis para PID 0. Alocando e promovendo para a fila de prontos.
+-> Recursos disponíveis para PID 1. Alocando e promovendo para a fila de prontos.
+-> Recursos disponíveis para PID 2. Alocando e promovendo para a fila de prontos.
+-> Recursos disponíveis para PID 3. Alocando e promovendo para a fila de prontos.
+-> Recursos disponíveis para PID 4. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 1
+offset: 0
+blocks: 64
+priority: 0
+time: 1
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 1 =>
+P1 STARTED
+P1 instruction 1
+-> Liberando recursos do processo PID 1...
+P1 return SIGINT
+dispatcher =>
+PID: 0
+offset: 64
+blocks: 128
+priority: 1
+time: 2
+printers: 1
+scanners: 0
+modems: 0
+drives: 1
+process 0 =>
+P0 STARTED
+P0 instruction 1
+dispatcher =>
+PID: 2
+offset: 192
+blocks: 128
+priority: 1
+time: 1
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 2 =>
+P2 STARTED
+P2 instruction 1
+-> Liberando recursos do processo PID 2...
+P2 return SIGINT
+dispatcher =>
+PID: 3
+offset: 320
+blocks: 256
+priority: 1
+time: 2
+printers: 1
+scanners: 0
+modems: 0
+drives: 0
+process 3 =>
+P3 STARTED
+P3 instruction 1
+dispatcher =>
+PID: 4
+offset: 576
+blocks: 256
+priority: 1
+time: 3
+printers: 0
+scanners: 0
+modems: 0
+drives: 2
+process 4 =>
+P4 STARTED
+P4 instruction 1
+P0 instruction 2
+-> Liberando recursos do processo PID 0...
+P0 return SIGINT
+P3 instruction 2
+-> Liberando recursos do processo PID 3...
+P3 return SIGINT
+P4 instruction 2
+P4 instruction 3
+-> Liberando recursos do processo PID 4...
+P4 return SIGINT
+-> Recursos disponíveis para PID 5. Alocando e promovendo para a fila de prontos.
+-> Recursos disponíveis para PID 6. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 6
+offset: 0
+blocks: 64
+priority: 0
+time: 1
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 6 =>
+P6 STARTED
+P6 instruction 1
+-> Liberando recursos do processo PID 6...
+P6 return SIGINT
+dispatcher =>
+PID: 5
+offset: 64
+blocks: 770
+priority: 1
+time: 2
+printers: 1
+scanners: 0
+modems: 0
+drives: 0
+process 5 =>
+P5 STARTED
+P5 instruction 1
+P5 instruction 2
+-> Liberando recursos do processo PID 5...
+P5 return SIGINT
+--- Loop Principal de Execução Terminado ---
+
+
+--- Processando Operações de Arquivo ---
+Sistema de arquivos inicializado com 1000 blocos.
+Operação Ignorada: Processo com PID 7 não faz parte do conjunto inicial.
+Operação Falha: Processo 2 não pôde deletar o arquivo B (não encontrado).
+Operação Sucesso: Processo 1 criou o arquivo G.
+Operação Falha: Processo 2 não pôde criar o arquivo M (sem espaço ou erro).
+Operação Falha: Processo 6 não pôde deletar o arquivo A (não encontrado).
+Operação Falha: Processo 3 não pôde criar o arquivo R (sem espaço ou erro).
+Operação Sucesso: Processo 4 criou o arquivo X.
+
+--- Estado Final do Disco ---
+=== ARQUIVOS ===
+A (Blocos: 50)
+B (Blocos: 500)
+C (Blocos: 10)
+D (Blocos: 301)
+E (Blocos: 136)
+G (Blocos: 2)
+X (Blocos: 1)
+Uso do disco: 1000/1000 blocos (100.0%)
+Mapa de ocupação do disco por bloco:
+A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A C C C C C C C C C C B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B B D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D D E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E E G G X 0 
+
+Desligando o pseudo-SO...
+Sistema desligado.
