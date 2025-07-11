@@ -36,11 +36,21 @@ void run_current_process() {
 
     if (current_process->priority == PRIORITY_REAL_TIME) {
         // Processos tempo real executam até terminar
-        while (!is_process_finished(current_process)) {
-            execute_process_instruction(current_process);
+    
+        // Processos tempo real executam uma instrução por chamada
+        execute_process_instruction(current_process);
+
+        // Se o processo terminou após a instrução, ele é destruído.
+        if (is_process_finished(current_process)) {
+            destroy_process(current_process);
+            current_process = NULL;
+        } else {
+            // Se não terminou, ele é colocado de volta no início da fila para
+            // garantir que será o próximo a ser executado (FIFO).
+            add_process_to_queue(current_process);
+            current_process = NULL;
         }
-        destroy_process(current_process);
-        current_process = NULL;
+
         // Printar só destruição via return SIGINT dentro de destroy_process
     } else {
         // Processos usuário executam por quantum

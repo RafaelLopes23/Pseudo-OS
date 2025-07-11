@@ -1,0 +1,3 @@
+<tempo_inicialização>, <prioridade>, <tempo_processador>, <blocos_memoria>, <impressora>, <scanner>, <modem>, <disco>
+2, 0, 3, 64, 0, 0, 0, 0
+8, 0, 2, 64, 0, 0, 0, 0

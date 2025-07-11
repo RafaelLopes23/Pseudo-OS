@@ -29,7 +29,6 @@ void initialize_system() {
     init_io_resources(&io_resources);
     init_process();
     init_scheduler();
-    init_filesystem();
     printf("Sistema inicializado com sucesso.\n\n");
 }
 
@@ -64,6 +63,8 @@ void process_filesystem_operations(const char* filename) {
 
     fgets(line, sizeof(line), file);
     sscanf(line, "%d", &total_disk_blocks);
+
+    init_filesystem(total_disk_blocks);
 
     fgets(line, sizeof(line), file);
     sscanf(line, "%d", &num_initial_files);
@@ -100,6 +101,8 @@ void process_filesystem_operations(const char* filename) {
             }
         } else if (op_code == 1) {
             // deleção de arquivo
+
+            sscanf(line, "%d, %d, %s", &process_id, &op_code, file_name);
             if (delete_file(file_name) == 0) {
                 printf("Operação Sucesso: Processo %d deletou o arquivo %s.\n", process_id, file_name);
             } else {
