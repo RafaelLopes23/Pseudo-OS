@@ -2,12 +2,14 @@
 #define MEMORY_H
 
 #include "../../include/shared/constants.h"
+#include <pthread.h>
 
 typedef struct {
     int total_blocks;
     int reserved_blocks;
     int shared_blocks;
-    int blocks[TOTAL_MEMORY_BLOCKS];  // bitmap de uso de cada bloco
+    int blocks[TOTAL_MEMORY_BLOCKS];
+    pthread_mutex_t lock;
 } MemoryManager;
 
 extern MemoryManager mem_manager;
@@ -25,5 +27,7 @@ void free_memory(int offset, int blocks);
 // Checa disponibilidade sem alterar o estado
 // Retorna 1 se houver espaço, 0 caso contrário
 int check_memory_availability(int blocks, int region);
+
+void destroy_memory_manager();
 
 #endif // MEMORY_H

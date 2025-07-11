@@ -1,19 +1,17 @@
-// fileops.h
 #ifndef FILEOPS_H
 
 #define FILEOPS_H
 
-// TODO: [Pessoa 3] Implementar operações de arquivo
-
 #include "filesystem.h"
+#include "../core/types.h" 
 
 // Função para criar um arquivo
 // Retorna 0 em caso de sucesso, ou um código de erro em caso de falha
-int create_file(const char *filename, int blocks);
+int create_file(const char *filename, int blocks, int owner_pid);
 
 // Função para deletar um arquivo
 // Retorna 0 em caso de sucesso, ou um código de erro em caso de falha
-int delete_file(const char *filename);
+int delete_file(const char *filename, int requester_pid, ProcessPriority requester_priority);
 
 // Função para ler um arquivo
 // Retorna 0 em caso de sucesso, ou um código de erro em caso de falha

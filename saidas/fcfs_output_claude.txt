@@ -1,0 +1,190 @@
+dispatcher =>
+PID: 0
+offset: 0
+blocks: 64
+priority: 0
+time: 3
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 0 =>
+P0 STARTED
+P0 instruction 1
+P0 instruction 2
+P0 instruction 3
+P0 return SIGINT
+
+dispatcher =>
+PID: 1
+offset: 64
+blocks: 64
+priority: 0
+time: 6
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 1 =>
+P1 STARTED
+P1 instruction 1
+P1 instruction 2
+P1 instruction 3
+P1 instruction 4
+P1 instruction 5
+P1 instruction 6
+P1 return SIGINT
+
+dispatcher =>
+PID: 2
+offset: 128
+blocks: 64
+priority: 0
+time: 4
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 2 =>
+P2 STARTED
+P2 instruction 1
+P2 instruction 2
+P2 instruction 3
+P2 instruction 4
+P2 return SIGINT
+
+dispatcher =>
+PID: 3
+offset: 192
+blocks: 64
+priority: 0
+time: 5
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 3 =>
+P3 STARTED
+P3 instruction 1
+P3 instruction 2
+P3 instruction 3
+P3 instruction 4
+P3 instruction 5
+P3 return SIGINT
+
+dispatcher =>
+PID: 4
+offset: 256
+blocks: 64
+priority: 0
+time: 2
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 4 =>
+P4 STARTED
+P4 instruction 1
+P4 instruction 2
+P4 return SIGINT
+
+dispatcher =>
+PID: 5
+offset: 320
+blocks: 63
+priority: 0
+time: 1
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 5 =>
+P5 STARTED
+P5 instruction 1
+P5 return SIGINT
+
+dispatcher =>
+PID: 6
+offset: 383
+blocks: 60
+priority: 0
+time: 3
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 6 =>
+P6 STARTED
+P6 instruction 1
+P6 instruction 2
+P6 instruction 3
+P6 return SIGINT
+
+dispatcher =>
+PID: 7
+offset: 443
+blocks: 64
+priority: 0
+time: 2
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 7 =>
+P7 STARTED
+P7 instruction 1
+P7 instruction 2
+P7 return SIGINT
+
+dispatcher =>
+PID: 8
+offset: 507
+blocks: 64
+priority: 0
+time: 4
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 8 =>
+P8 STARTED
+P8 instruction 1
+P8 instruction 2
+P8 instruction 3
+P8 instruction 4
+P8 return SIGINT
+
+dispatcher =>
+PID: 9
+offset: 571
+blocks: 64
+priority: 0
+time: 1
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 9 =>
+P9 STARTED
+P9 instruction 1
+P9 return SIGINT
+Sistema de arquivos =>
+Operação 1 => Falha
+O processo 0 não pode criar o arquivo A (falta de espaço).
+Operação 2 => Sucesso
+O processo 10 criou o arquivo B (blocos 91, 92, 93, 94, 95, 96, 97, 98, 99, 100).
+Operação 3 => Falha
+O processo 2 não pode criar o arquivo C (falta de espaço).
+Operação 4 => Sucesso
+O processo 7 criou o arquivo D (bloco 101).
+Operação 5 => Sucesso
+O processo 8 deletou o arquivo X.
+Operação 6 => Sucesso
+O processo 0 deletou o arquivo R.
+Operação 7 => Falha
+O processo 2 não pode deletar o arquivo T porque ele não existe.
+Operação 8 => Sucesso
+O processo 5 criou o arquivo E (blocos 0, 1, 2).
+
+Mapa de ocupação do disco:
+E E E 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 Y Y Y Y Z Z Z Z Z Z Z Z Z Z 0 0 0 M M M M M M M M M M M M M M M M M M B B B B B B B B B B D

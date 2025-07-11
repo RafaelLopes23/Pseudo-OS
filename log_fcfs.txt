@@ -1,0 +1,218 @@
+Inicializando o pseudo-SO...
+Módulo de processos inicializado.
+Sistema inicializado com sucesso.
+
+Carregando processos do arquivo: examples2/fcfs.txt
+Total de processos lidos para a fila de espera: 10
+
+--- Iniciando Loop Principal de Execução ---
+-> Recursos disponíveis para PID 0. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 0
+offset: 0
+blocks: 64
+priority: 0
+time: 3
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 0 =>
+P0 STARTED
+P0 instruction 1
+P0 instruction 2
+P0 instruction 3
+-> Liberando recursos do processo PID 0...
+P0 return SIGINT
+-> Recursos disponíveis para PID 1. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 1
+offset: 0
+blocks: 64
+priority: 0
+time: 6
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 1 =>
+P1 STARTED
+P1 instruction 1
+P1 instruction 2
+P1 instruction 3
+P1 instruction 4
+P1 instruction 5
+P1 instruction 6
+-> Liberando recursos do processo PID 1...
+P1 return SIGINT
+-> Recursos disponíveis para PID 2. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 2
+offset: 0
+blocks: 64
+priority: 0
+time: 4
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 2 =>
+P2 STARTED
+P2 instruction 1
+P2 instruction 2
+P2 instruction 3
+P2 instruction 4
+-> Liberando recursos do processo PID 2...
+P2 return SIGINT
+-> Recursos disponíveis para PID 3. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 3
+offset: 0
+blocks: 64
+priority: 0
+time: 5
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 3 =>
+P3 STARTED
+P3 instruction 1
+P3 instruction 2
+P3 instruction 3
+P3 instruction 4
+P3 instruction 5
+-> Liberando recursos do processo PID 3...
+P3 return SIGINT
+-> Recursos disponíveis para PID 4. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 4
+offset: 0
+blocks: 64
+priority: 0
+time: 2
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 4 =>
+P4 STARTED
+P4 instruction 1
+P4 instruction 2
+-> Liberando recursos do processo PID 4...
+P4 return SIGINT
+-> Recursos disponíveis para PID 5. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 5
+offset: 0
+blocks: 63
+priority: 0
+time: 1
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 5 =>
+P5 STARTED
+P5 instruction 1
+-> Liberando recursos do processo PID 5...
+P5 return SIGINT
+-> Recursos disponíveis para PID 6. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 6
+offset: 0
+blocks: 60
+priority: 0
+time: 3
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 6 =>
+P6 STARTED
+P6 instruction 1
+P6 instruction 2
+P6 instruction 3
+-> Liberando recursos do processo PID 6...
+P6 return SIGINT
+-> Recursos disponíveis para PID 7. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 7
+offset: 0
+blocks: 64
+priority: 0
+time: 2
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 7 =>
+P7 STARTED
+P7 instruction 1
+P7 instruction 2
+-> Liberando recursos do processo PID 7...
+P7 return SIGINT
+-> Recursos disponíveis para PID 8. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 8
+offset: 0
+blocks: 64
+priority: 0
+time: 4
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 8 =>
+P8 STARTED
+P8 instruction 1
+P8 instruction 2
+P8 instruction 3
+P8 instruction 4
+-> Liberando recursos do processo PID 8...
+P8 return SIGINT
+-> Recursos disponíveis para PID 9. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 9
+offset: 0
+blocks: 64
+priority: 0
+time: 1
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 9 =>
+P9 STARTED
+P9 instruction 1
+-> Liberando recursos do processo PID 9...
+P9 return SIGINT
+--- Loop Principal de Execução Terminado ---
+
+
+--- Processando Operações de Arquivo ---
+Sistema de arquivos inicializado com 100 blocos.
+Operação Falha: Processo 0 não pôde criar o arquivo A (sem espaço ou erro).
+Operação Ignorada: Processo com PID 10 não faz parte do conjunto inicial.
+Operação Sucesso: Processo 2 criou o arquivo C.
+Operação Sucesso: Processo 7 criou o arquivo D.
+Operação Falha: Processo 8 não pôde deletar o arquivo X (não encontrado).
+Operação Falha: Processo 0 não pôde deletar o arquivo R (não encontrado).
+Operação Falha: Processo 2 não pôde deletar o arquivo T (não encontrado).
+Operação Falha: Processo 5 não pôde criar o arquivo E (sem espaço ou erro).
+
+--- Estado Final do Disco ---
+=== ARQUIVOS ===
+X (Blocos: 55)
+Y (Blocos: 4)
+Z (Blocos: 10)
+R (Blocos: 3)
+M (Blocos: 18)
+C (Blocos: 9)
+D (Blocos: 1)
+Uso do disco: 100/100 blocos (100.0%)
+Mapa de ocupação do disco por bloco:
+X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X D Y Y Y Y Z Z Z Z Z Z Z Z Z Z R R R M M M M M M M M M M M M M M M M M M C C C C C C C C C 
+
+Desligando o pseudo-SO...
+Sistema desligado.

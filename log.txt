@@ -1,0 +1,69 @@
+Inicializando o pseudo-SO...
+Módulo de processos inicializado.
+Sistema inicializado com sucesso.
+
+Carregando processos do arquivo: examples2/input.txt
+Total de processos lidos para a fila de espera: 2
+
+--- Iniciando Loop Principal de Execução ---
+-> Recursos disponíveis para PID 0. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 0
+offset: 0
+blocks: 64
+priority: 0
+time: 3
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 0 =>
+P0 STARTED
+P0 instruction 1
+P0 instruction 2
+P0 instruction 3
+-> Liberando recursos do processo PID 0...
+P0 return SIGINT
+-> Recursos disponíveis para PID 1. Alocando e promovendo para a fila de prontos.
+dispatcher =>
+PID: 1
+offset: 0
+blocks: 64
+priority: 0
+time: 2
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 1 =>
+P1 STARTED
+P1 instruction 1
+P1 instruction 2
+-> Liberando recursos do processo PID 1...
+P1 return SIGINT
+--- Loop Principal de Execução Terminado ---
+
+
+--- Processando Operações de Arquivo ---
+Sistema de arquivos inicializado com 10 blocos.
+Carregando estado inicial do disco...
+Estado inicial do disco carregado.
+Operação Falha: Processo 0 não pôde criar o arquivo A.
+Operação Sucesso: Processo 0 deletou o arquivo X.
+Operação Ignorada: Processo com PID 2 não foi carregado.
+Operação Sucesso: Processo 0 criou o arquivo D.
+Operação Sucesso: Processo 1 criou o arquivo E.
+
+--- Estado Final do Disco ---
+=== ARQUIVOS ===
+D (Blocos: 3)
+Y (Blocos: 1)
+Z (Blocos: 3)
+E (Blocos: 2)
+Uso do disco: 9/10 blocos (90.0%)
+Mapa de ocupação do disco por bloco:
+D D D Y 0 Z Z Z E E 
+
+Desligando o pseudo-SO...
+Limpando a tabela de processos...
+Sistema desligado.

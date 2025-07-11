@@ -19,7 +19,8 @@ int check_disk_space(){
 void list_files() {
     printf("=== ARQUIVOS ===\n");
     for (int i = 0; i < MAX_FILES; i++) {
-        if (fs.files[i].name[0] == '\0' || fs.files[i].name[0] == '<') continue;
+        if (fs.files[i].name[0] == '\0' || fs.files[i].name[0] == '<') 
+            continue;
         printf("%s (Blocos: %d)\n", fs.files[i].name, fs.files[i].block_count);
     }
 }
@@ -27,7 +28,6 @@ void list_files() {
 void check_disk_usage() {
     printf("Uso do disco: %d/%u blocos (%.1f%%)\n", fs.used_blocks, fs.total_blocks,(float)fs.used_blocks / fs.total_blocks * 100);
 }
-
 
 
 void print_disk_block_map() {
@@ -41,7 +41,6 @@ void print_disk_block_map() {
 
     // Preenche o array com os donos de cada bloco baseado na sua posição real
     for(int i = 0; i < MAX_FILES; i++){
-        // Se o arquivo existe
         if(fs.files[i].name[0] != '\0') {
             for(uint32_t j = 0; j < fs.files[i].block_count; j++){
                 uint32_t block_index = fs.files[i].first_block + j;
@@ -52,7 +51,7 @@ void print_disk_block_map() {
         }
     }
 
-    // Imprime o mapa
+    // Printa o mapa
     for (uint32_t i = 0; i < fs.total_blocks; i++) {
         printf("%s ", block_owners[i]);
     }

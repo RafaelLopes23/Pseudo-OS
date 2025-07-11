@@ -2,7 +2,7 @@
 #define FILESYSTEM_H
 #include <stdint.h>
 
-// Constantes …
+// Constantes
 #define MAX_FILES       1000
 #define TOTAL_BLOCKS    1024
 #define BLOCK_SIZE      4096
@@ -12,9 +12,9 @@ typedef struct {
     char name[MAX_FILENAME_LEN];
     uint32_t first_block;
     uint32_t block_count;
+    int owner_pid;
 } File;
 
-// ====================== adicionar aqui ======================
 typedef struct {
     File files[MAX_FILES];
     uint32_t total_blocks;
@@ -23,15 +23,12 @@ typedef struct {
     int used_blocks;
 } APFS;
 extern APFS fs;
-// ============================================================
 
-// Funções…
+// Funções
 void init_filesystem();
 int check_disk_space();
 void list_files();
 void check_disk_usage();
-// Função para imprimir mapa de ocupação por bloco
 void print_disk_block_map();
-// Cria um arquivo inicial em posição específica (respeita o first_block fornecido)
 int create_initial_file(const char *filename, uint32_t first_block, uint32_t blocks);
 #endif // FILESYSTEM_H
