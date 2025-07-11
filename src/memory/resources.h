@@ -12,6 +12,8 @@ typedef struct {
     int sata_drives_available; // Contador de drives SATA disponíveis
 } IOResources;
 
+extern IOResources io_resources;
+
 // Função para inicializar os recursos de E/S
 void init_io_resources(IOResources *resources);
 

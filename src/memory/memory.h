@@ -1,29 +1,29 @@
-// memory.h
 #ifndef MEMORY_H
 #define MEMORY_H
 
-// TODO: [Pessoa 2] Implementar gerenciamento de memória
+#include "../../include/shared/constants.h"
 
-// Estruturas de dados para gerenciamento de memória
 typedef struct {
-    int total_blocks;        // Total de blocos de memória
-    int reserved_blocks;     // Blocos reservados para tempo real
-    int shared_blocks;       // Blocos compartilhados para usuários
-    // TODO: [Pessoa 2] Adicionar mais campos conforme necessário
+    int total_blocks;
+    int reserved_blocks;
+    int shared_blocks;
+    int blocks[TOTAL_MEMORY_BLOCKS];  // bitmap de uso de cada bloco
 } MemoryManager;
 
-// Funções para gerenciamento de memória
-void initialize_memory(MemoryManager *mem_manager);
-// TODO: [Pessoa 2] Implementar a função para inicializar o gerenciador de memória
+extern MemoryManager mem_manager;
 
-int allocate_memory(int blocks);
-// TODO: [Pessoa 2] Implementar a função para alocar memória
+// Inicializa todos os blocos como livres
+void initialize_memory(MemoryManager *mgr);
 
-void free_memory(int blocks);
-// TODO: [Pessoa 2] Implementar a função para liberar memória
+// Aloca `blocks` blocos; `region`=1→tempo real, 0→usuário
+// Retorna offset inicial ou -1 se falhar
+int allocate_memory(int blocks, int region);
 
-// Funções para verificar disponibilidade de memória
-int check_memory_availability(int blocks);
-// TODO: [Pessoa 2] Implementar a função para verificar a disponibilidade de memória
+// Libera `blocks` blocos a partir de `offset`
+void free_memory(int offset, int blocks);
+
+// Checa disponibilidade sem alterar o estado
+// Retorna 1 se houver espaço, 0 caso contrário
+int check_memory_availability(int blocks, int region);
 
 #endif // MEMORY_H

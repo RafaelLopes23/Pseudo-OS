@@ -1,56 +1,24 @@
-# Makefile for the pseudo-operating system project
-
 CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -I./include
+CFLAGS = -std=c99 -Wall -Wextra -g -I./include -I./src/core
+LDFLAGS = -pthread
+
 SRC_DIR = src
-INCLUDE_DIR = include
-TEST_DIR = tests
-EXAMPLES_DIR = examples
+OBJ_DIR = obj
 
-# choose rm or del based on OS
-ifdef OS
-  ifeq ($(OS),Windows_NT)
-    RM = del /Q
-  else
-    RM = rm -f
-  endif
-else
-  RM = rm -f
-endif
-
-# Source files (apenas .c)
-CORE_SRC = $(SRC_DIR)/core/main.c
-PROCESS_SRC = $(SRC_DIR)/process/process.c $(SRC_DIR)/process/scheduler.c $(SRC_DIR)/process/dispatcher.c
-MEMORY_SRC = $(SRC_DIR)/memory/memory.c $(SRC_DIR)/memory/resources.c
-FILESYSTEM_SRC = $(SRC_DIR)/filesystem/filesystem.c $(SRC_DIR)/filesystem/fileops.c
-
-# All source files
-ALL_SRC = $(CORE_SRC) $(PROCESS_SRC) $(MEMORY_SRC) $(FILESYSTEM_SRC)
-
-# Object files
-OBJ = $(ALL_SRC:.c=.o)
-
-# Target for the final executable
+SOURCES = $(wildcard $(SRC_DIR)/*/*.c)
+OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES))
 TARGET = pseudo-os
 
-# Default target
 all: $(TARGET)
 
-# Linking the final executable
-$(TARGET): $(OBJ)
-	$(CC) -o $@ $^
+$(TARGET): $(OBJECTS)
+	$(CC) $(LDFLAGS) -o $@ $^
 
-# Compiling source files
-%.o: %.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Test individual modules
-test_process:
-	$(CC) $(CFLAGS) -o test_process.exe $(TEST_DIR)/test_process.c $(PROCESS_SRC)
-
-# Clean up build files
 clean:
-	$(RM) $(OBJ) $(TARGET) test_process.exe
+	rm -rf $(OBJ_DIR) $(TARGET) log.txt
 
-# Phony targets
-.PHONY: all test_process clean
+.PHONY: all clean

@@ -1,0 +1,298 @@
+# Sistemas Operacionais
+## Especificação do Trabalho Prático (Implementação)
+
+**Profa.:** Aletéia Patrícia Favacho de Araújo
+
+## Orientações Gerais
+
+O trabalho de implementação da disciplina de SO, a ser desenvolvido em grupo com três (03) componentes, os mesmos do seminário, compreenderá as seguintes fases:
+
+- Estudo teórico relacionado ao assunto do trabalho;
+- Apresentação da solução teórica dada ao problema;
+- Implementação da solução proposta;
+- Apresentação e explicação detalhada do código-fonte implementado;
+- Relatório explicando o processo de construção e o uso da aplicação.
+
+## Orientações Específicas
+
+### 1. Problema
+
+Implementação de um pseudo-SO multiprogramado, composto por um **Gerenciador de Processos**, **Gerenciador de Memória**, **Gerenciador de E/S** e **Gerenciador de Arquivos**. 
+
+- O **gerenciador de processos** deve ser capaz de agrupar os processos em quatro níveis de prioridades.
+- O **gerenciador de memória** deve garantir que um processo não acesse as regiões de memória de um outro processo.
+- O **gerenciador de E/S** deve ser responsável por administrar a alocação e a liberação de todos os recursos disponíveis, garantindo uso exclusivo deles.
+- O **gerenciador de arquivos** deve permitir que os processos possam criar e deletar arquivos, de acordo com o modelo de alocação determinado.
+
+### 1.1 Estrutura das Filas
+
+O programa deve ter duas filas de prioridades distintas:
+
+1. **Fila de processos de tempo real**: Processos de tempo real entram para a fila de maior prioridade, sendo gerenciados pela política de escalonamento **FIFO** (First In First Out), sem preempção.
+
+2. **Fila de processos de usuários**: Processos de usuário devem utilizar múltiplas filas de prioridades com realimentação. Para isso, devem ser mantidas três filas com prioridades distintas.
+
+Para evitar starvation, o sistema operacional deve modificar a prioridade dos processos executados mais frequentemente e/ou utilizar uma técnica de envelhecimento (aging).
+
+**Regras de Prioridade:**
+- Quanto menor o valor da prioridade, maior será sua prioridade no escalonamento
+- Processos de tempo real (mais prioritários) têm prioridade definida como **0 (zero)**
+- Processos de usuário podem ser preemptados
+- Quantum deve ser definido de **1 milissegundo**
+
+**Capacidade:** As filas devem suportar no máximo **1000 processos**. Recomenda-se utilizar uma fila "global" que permita avaliar os recursos disponíveis antes da execução e que facilite classificar o tipo de processo.
+
+#### Figura 1 – Estrutura de Filas para o Pseudo-SO
+
+```
+FILA GLOBAL (máx. 1000 processos)
+├── FILA TEMPO REAL (Prioridade 0)
+│   └── Escalonamento: FIFO, sem preempção
+│
+└── FILAS DE USUÁRIO (Prioridades 1, 2, 3)
+    ├── Fila Prioridade 1 (Alta)
+    ├── Fila Prioridade 2 (Média)  
+    └── Fila Prioridade 3 (Baixa)
+    └── Escalonamento: Round-Robin com realimentação
+        └── Quantum: 1ms, com preempção
+        └── Técnica de aging para evitar starvation
+```
+
+### 1.2 Estrutura de Memória
+
+A alocação de memória deve ser implementada como um conjunto de blocos contíguos, onde cada bloco equivale a uma palavra da memória real.
+
+**Características:**
+- Cada processo deve alocar um **segmento contíguo** de memória
+- O segmento permanece alocado durante toda a execução do processo
+- **Não é necessário** implementar: memória virtual, swap, nem sistema de paginação
+- Apenas verificar a disponibilidade de recursos antes de iniciar um processo
+
+**Especificações de Tamanho:**
+- Tamanho fixo total: **1024 blocos**
+- **64 blocos** reservados para processos de tempo-real
+- **960 blocos** restantes compartilhados entre processos de usuário
+
+#### Figura 2 – Modelo de memória com região reservada
+
+```
+MEMÓRIA TOTAL: 1024 blocos (exemplo: cada bloco = 1 MB)
+
+┌─────────────────────────────────────────────────────────────┐
+│  PROCESSOS TEMPO REAL (64 blocos)                          │
+│  Blocos 0-63: Reservados exclusivamente                    │
+│  Acesso: Apenas processos prioridade 0                     │
+├─────────────────────────────────────────────────────────────┤
+│  PROCESSOS DE USUÁRIO (960 blocos)                         │
+│  Blocos 64-1023: Compartilhados                            │
+│  Acesso: Processos prioridade 1, 2, 3                      │
+│  Alocação: Contígua por processo                           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 1.3 Estrutura dos Recursos Disponíveis
+
+O pseudo-SO deve gerenciar os seguintes recursos de E/S:
+
+- **1 scanner**
+- **2 impressoras**
+- **1 modem**
+- **2 dispositivos SATA**
+
+**Regras de Alocação:**
+- Todos os processos, **exceto os de tempo-real**, podem obter qualquer um desses recursos
+- Cada recurso deve ser alocado para **um processo por vez**
+- **Não há preempção** na alocação dos dispositivos de E/S
+- Processos de tempo real **não precisam** de recursos de I/O
+
+### 1.4 Estrutura do Sistema de Arquivos
+
+O pseudo-SO deve permitir que cada processo possa **criar e deletar arquivos**.
+
+**Características:**
+- Na criação: dados ficam residentes no disco mesmo após encerramento do processo
+- Método de alocação: **alocação contígua**
+- Arquivo tratado como uma **unidade de manipulação**
+- Algoritmo de armazenamento: **first-fit** (busca sempre a partir do primeiro bloco do disco)
+
+**Permissões por Tipo de Processo:**
+
+**Processos de Tempo Real:**
+- Podem **criar** arquivos (se tiver espaço)
+- Podem **deletar qualquer arquivo** (mesmo que não criado por eles)
+
+**Processos de Usuário:**
+- Podem **criar** quantos arquivos desejarem (se houver espaço)
+- Podem **deletar apenas** arquivos criados por eles
+
+**Entrada do Sistema:**
+- Arquivo com extensão `.txt` contendo:
+  - Quantidade total de blocos no disco
+  - Especificação dos segmentos ocupados por cada arquivo
+  - Operações a serem realizadas por cada processo
+
+**Saída do Sistema:**
+- Mapa de ocupação do disco após execução
+- Descrição de quais arquivos estão em cada bloco
+- Identificação de blocos vazios (identificados por 0)
+
+## 2. Estrutura do Programa
+
+O programa deve ser dividido em, pelo menos, cinco grandes módulos:
+
+### Módulos Obrigatórios:
+
+1. **Módulo de Processos** – classes e estruturas de dados relativas ao processo. Mantém informações específicas do processo.
+
+2. **Módulo de Filas** – mantém as interfaces e funções que operam sobre os processos.
+
+3. **Módulo de Memória** – provê uma interface de abstração de memória RAM.
+
+4. **Módulo de Recurso** – trata a alocação e liberação dos recursos de E/S para os processos.
+
+5. **Módulo de Arquivos** – trata as operações create e delete sobre os arquivos.
+
+> **Nota:** Outros módulos podem ser utilizados, caso sejam necessários.
+
+### 2.1 Interface de Utilização
+
+#### 2.1.1 Saída
+
+O processo principal é o **"despachante"**. Esse é o primeiro processo criado na execução do problema e deve ser responsável pela criação de qualquer processo.
+
+**Informações a serem exibidas na criação de cada processo:**
+- **PID** (int)
+- **Prioridade do processo** (int)
+- **Offset da memória** (int)
+- **Quantidade de blocos alocados na memória** (int)
+- **Utilização de impressora** (bool)
+- **Utilização de scanner** (bool)
+- **Utilização de drivers** (bool)
+
+O processo deve exibir alguma mensagem que indique sua execução, mostrando que conseguiu ser escalonado para a CPU.
+
+#### 2.1.2 Entrada
+
+O programa deve ler **dois arquivos**:
+
+**1. Arquivo de Processos (.txt):**
+Cada linha contém as informações de um único processo:
+
+```
+<tempo de inicialização>, <prioridade>, <tempo de processador>, <blocos em memória>, <número-código da impressora requisitada>, <requisição do scanner>, <requisição do modem>, <número-código do disco>
+```
+
+**2. Arquivo de Sistema de Arquivos (.txt):**
+Organização interna do arquivo:
+
+- **Linha 1:** Quantidade de blocos do disco
+- **Linha 2:** Quantidade de segmentos ocupados no disco (n)
+- **Linha 3 até Linha n+2:** arquivo (identificado por letra), número do primeiro bloco gravado, quantidade de blocos ocupados
+- **A partir da linha n+3:** operações do sistema de arquivos
+
+Formato das operações:
+```
+<ID_Processo>, <Código_Operação>, <Nome_arquivo>, <se_operacaoCriar_numero_blocos>
+```
+
+**Códigos de Operação:**
+- **0**: criar arquivo
+- **1**: deletar arquivo
+
+> **Nota:** ID_Processo sempre inicia em 0 (zero), processos numerados de 0 até (Quantidade de Processos - 1).
+
+#### 2.1.3 Exemplo de Execução do Pseudo-SO
+
+**Arquivo processes.txt:**
+```
+2, 0, 3, 64, 0, 0, 0, 0
+8, 0, 2, 64, 0, 0, 0, 0
+```
+
+**Arquivo files.txt:**
+```
+10
+3
+X, 0, 2
+Y, 3, 1
+Z, 5, 3
+0, 0, A, 5
+0, 1, X
+2, 0, B, 2
+0, 0, D, 3
+1, 0, E, 2
+```
+
+**Saída Esperada:**
+```
+$ ./dispatcher processes.txt files.txt
+dispatcher =>
+PID: 0
+offset: 0
+blocks: 64
+priority: 0
+time: 3
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 0 =>
+P0 STARTED
+P0 instruction 1
+P0 instruction 2
+P0 instruction 3
+P0 return SIGINT
+dispatcher =>
+PID: 1
+offset: 65
+blocks: 64
+priority: 0
+time: 2
+printers: 0
+scanners: 0
+modems: 0
+drives: 0
+process 1 =>
+P1 STARTED
+P1 instruction 1
+P1 instruction 2
+P1 return SIGINT
+Sistema de arquivos =>
+Operação 1 => Falha
+O processo 0 não pode criar o arquivo A (falta de espaço).
+Operação 2 => Sucesso
+O processo 0 deletou o arquivo X.
+Operação 3 => Falha
+O processo 2 não existe.
+Operação 4 => Sucesso
+O processo 0 criou o arquivo D (blocos 0, 1 e 2).
+Operação 5 => Falha
+O processo 1 não pode deletar o arquivo E porque ele não existe.
+Mapa de ocupação do disco:
+D D D Y Z Z Z
+```
+
+**Explicação da Saída:**
+- `dispatcher =>` indica quando o despachante leu informações do processo e cedeu tempo de CPU
+- O despachante é responsável por imprimir as operações do sistema de arquivos
+- `P0` e `P1` são processos que executam, exibindo suas ações
+
+## 3. Estudo Teórico para a Solução
+
+Cada grupo deverá buscar a solução para o **compartilhamento de recursos** e a **sincronização de processos** (ou threads), quando necessário, de acordo com o problema proposto.
+
+É responsabilidade de cada grupo estudar a maneira mais eficiente para implementar o pseudo-SO.
+
+### Soluções Possíveis para Compartilhamento de Recursos:
+
+As soluções possíveis são exatamente as mesmas vistas em sala de aula:
+
+1. **Semáforos (baixo nível)**
+2. **Monitores (alto nível)** - devem ser implementados pela linguagem de programação, pois o compilador deve reconhecer o tipo monitor
+3. **Troca de mensagens** - usadas preferencialmente para garantir sincronização entre processos em máquinas diferentes, mas também podem ser usadas para processos na mesma máquina
+
+> **Importante:** Para o problema de compartilhamento de recursos não há soluções mágicas. As soluções listadas acima são as opções disponíveis para implementação.
+
+---
+
+*Este documento serve como especificação completa até o tópico 3 para implementação do pseudo-SO multiprogramado.*

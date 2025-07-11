@@ -18,12 +18,6 @@
 // Quantum de tempo para processos de usuário (em milissegundos)
 #define USER_PROCESS_QUANTUM 1
 
-// Prioridades de processos
-#define PRIORITY_REAL_TIME 0
-#define PRIORITY_USER_1 1
-#define PRIORITY_USER_2 2
-#define PRIORITY_USER_3 3
-
 // Número de filas de prioridade
 #define NUMBER_OF_PRIORITY_QUEUES 4
 

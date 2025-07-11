@@ -1,77 +1,78 @@
-// TODO: [Pessoa 3] Implementar funções para gerenciamento do sistema de arquivos
-// Responsável: Pessoa 3
-// Funcionalidades a implementar:
-// - Inicialização do sistema de arquivos
-// - Criação e deleção de arquivos
-// - Leitura e escrita em arquivos
-// - Verificação de espaço disponível no disco
-// Dependências: filesystem.h, fileops.h
-
-
 #include "filesystem.h"
 #include "fileops.h"
 #include <string.h>
 #include <stdio.h>
+#include "../core/log.h"
 
-// Estrutura do APFS simulado
-typedef struct {
-    File files[MAX_FILES];
-    uint8_t disk_blocks[TOTAL_BLOCKS][BLOCK_SIZE];
-    int used_blocks;
-} APFS;
 
-static APFS fs;
 
-// Inicialização do sistema de arquivos
 void init_filesystem() {
-    memset(&fs, 0, sizeof(APFS));
+    memset(&fs, 0, sizeof(fs));
     fs.used_blocks = 0;
     printf("Sistema de arquivos inicializado.\n");
 }
 
-// Verifica espaço disponível
 int check_disk_space() {
-    return MAX_MEMORY_BLOCKS - fs.used_blocks;
+    // corrigido de MAX_MEMORY_BLOCKS para TOTAL_BLOCKS
+    return TOTAL_BLOCKS - fs.used_blocks;
 }
 
-// Lista arquivos
+
 void list_files() {
-    printf("=== ARQUIVOS ===\n");
+    print_section_header("ARQUIVOS NO DISCO");
+    
+     // Cabeçalho da tabela
+    char header[COL2_WIDTH];
+    snprintf(header, COL2_WIDTH, "%-*s %*s %*s", 
+             FILENAME_LEN, "NOME",
+             NUM_COL_WIDTH, "BLOCOS",
+             NUM_COL_WIDTH, "DONO");
+    print_log_entry("TIPO", header);
+    print_divider('-');
+
+     // Corpo da tabela
     for (int i = 0; i < MAX_FILES; i++) {
         if (fs.files[i].name[0] != '\0') {
-            printf("%s (Blocos: %d)\n", fs.files[i].name, fs.files[i].block_count);
+            char file_info[COL2_WIDTH];
+            char safe_name[FILENAME_LEN+1];
+            strncpy(safe_name, fs.files[i].name, FILENAME_LEN);
+            safe_name[FILENAME_LEN] = '\0';
+            
+            snprintf(file_info, COL2_WIDTH, "%-*s %*d %*d", 
+                     FILENAME_LEN, safe_name,
+                     NUM_COL_WIDTH, fs.files[i].block_count,
+                     NUM_COL_WIDTH, fs.files[i].owner_pid);
+            print_log_entry("📄 ARQ", file_info);
         }
     }
+    print_divider('=');
 }
 
-// Verifica ocupação do disco
+
 void check_disk_usage() {
     printf("Uso do disco: %d/%d blocos (%.1f%%)\n",
            fs.used_blocks, TOTAL_BLOCKS,
            (float)fs.used_blocks / TOTAL_BLOCKS * 100);
 }
 
-
-
-/*
-
-// Função para inicializar o sistema de arquivos
-void init_filesystem() {
-    // TODO: [Pessoa 3] Implementar a inicialização do sistema de arquivos
-}
-
-// Função para verificar espaço disponível no disco
-int check_disk_space() {
-    // TODO: [Pessoa 3] Implementar a verificação de espaço disponível
-    return 0; // placeholder
-}
-
-// Função para listar arquivos no sistema de arquivos
-void list_files() {
-    // TODO: [Pessoa 3] Implementar a lógica para listar arquivos
-}
-
-// Função para verificar a ocupação do disco
-void check_disk_usage() {
-    // TODO: [Pessoa 3] Implementar a lógica para verificar a ocupação do disco
+void print_disk_block_map() {
+    printf("Mapa de ocupação do disco por bloco:\n");
+    for (int blk = 0; blk < TOTAL_BLOCKS; blk++) {
+        int found = 0;
+        for (int i = 0; i < MAX_FILES; i++) {
+            if (fs.files[i].name[0] != '\0') {
+                uint32_t start = fs.files[i].first_block;
+                uint32_t count = fs.files[i].block_count;
+                if ((uint32_t)blk >= start && (uint32_t)blk < start + count) {
+                    printf("%s ", fs.files[i].name);
+                    found = 1;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            printf("0 ");
+        }
+    }
+    printf("\n");
 }

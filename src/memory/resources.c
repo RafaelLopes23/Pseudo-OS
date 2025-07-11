@@ -1,24 +1,51 @@
-// src/memory/resources.c
 #include "resources.h"
+#include "../../include/shared/constants.h"
+#include <string.h>
 
-// TODO: [Pessoa 2] Implementar gerenciador de recursos E/S
-void initialize_io_resources() {
-    // Implementar aqui: inicializar recursos de E/S (impressoras, scanners, etc.)
+IOResources io_resources;
+
+void init_io_resources(IOResources *io_resources) {
+    io_resources->scanner_available     = NUMBER_OF_SCANNERS;
+    io_resources->printers_available    = NUMBER_OF_PRINTERS;
+    io_resources->modem_available       = NUMBER_OF_MODEMS;
+    io_resources->sata_drives_available = NUMBER_OF_SATA_DRIVES;
 }
 
-// TODO: [Pessoa 2] Implementar verificação de disponibilidade de recursos
-int check_resource_availability() {
-    // Implementar aqui: verificar se os recursos de E/S estão disponíveis
-    return 1;  // placeholder
+int allocate_io_resource(IOResources *io_resources, const char *type) {
+    if (strcmp(type, "scanner") == 0) {
+        if (io_resources->scanner_available > 0) { io_resources->scanner_available--; return 0; }
+    } else if (strcmp(type, "printer") == 0) {
+        if (io_resources->printers_available > 0) { io_resources->printers_available--; return 0; }
+    } else if (strcmp(type, "modem") == 0) {
+        if (io_resources->modem_available > 0) { io_resources->modem_available--; return 0; }
+    } else if (strcmp(type, "sata") == 0) {
+        if (io_resources->sata_drives_available > 0) { io_resources->sata_drives_available--; return 0; }
+    }
+    return -1;
 }
 
-// TODO: [Pessoa 2] Implementar alocação de recursos
-int allocate_resource(int resource_id) {
-    // Implementar aqui: alocar o recurso solicitado
-    return 0;  // placeholder
+void release_io_resource(IOResources *io_resources, const char *type) {
+    if (strcmp(type, "scanner") == 0) {
+        if (io_resources->scanner_available < NUMBER_OF_SCANNERS) io_resources->scanner_available++;
+    } else if (strcmp(type, "printer") == 0) {
+        if (io_resources->printers_available < NUMBER_OF_PRINTERS) io_resources->printers_available++;
+    } else if (strcmp(type, "modem") == 0) {
+        if (io_resources->modem_available < NUMBER_OF_MODEMS) io_resources->modem_available++;
+    } else if (strcmp(type, "sata") == 0) {
+        if (io_resources->sata_drives_available < NUMBER_OF_SATA_DRIVES) 
+            io_resources->sata_drives_available++;
+    }
 }
 
-// TODO: [Pessoa 2] Implementar liberação de recursos
-void release_resource(int resource_id) {
-    // Implementar aqui: liberar o recurso alocado
+int check_io_resource_availability(IOResources *io_resources, const char *type) {
+    if (strcmp(type, "scanner") == 0) {
+        return io_resources->scanner_available > 0;
+    } else if (strcmp(type, "printer") == 0) {
+        return io_resources->printers_available > 0;
+    } else if (strcmp(type, "modem") == 0) {
+        return io_resources->modem_available > 0;
+    } else if (strcmp(type, "sata") == 0) {
+        return io_resources->sata_drives_available > 0;
+    }
+    return 0;
 }

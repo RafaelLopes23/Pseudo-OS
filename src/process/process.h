@@ -1,12 +1,13 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
+#include <stdbool.h>
 #include "../core/types.h"
 
 // Funções relacionadas ao gerenciamento de processos
 void init_process();
-PCB* create_process(int priority, int cpu_time, int memory_blocks, 
-                   int start_time, int printer_code, int scanner_needed, 
+PCB* create_process(int priority, int cpu_time, int memory_blocks,
+                   int start_time, int printer_code, int scanner_needed,
                    int modem_needed, int disk_code);
 void print_process_info(PCB* process);
 void terminate_process(PCB* process);
@@ -18,5 +19,7 @@ PCB* get_process_by_pid(int pid);
 int get_process_count();
 int has_active_processes();
 int load_processes_from_file(const char* filename);
+// Função para verificar se um PID foi carregado
+bool process_was_loaded(int pid);
 
 #endif // PROCESS_H
