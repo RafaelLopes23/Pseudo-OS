@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "../core/log.h"
 
-
+APFS fs;
 
 void init_filesystem() {
     memset(&fs, 0, sizeof(fs));
@@ -13,7 +13,6 @@ void init_filesystem() {
 }
 
 int check_disk_space() {
-    // corrigido de MAX_MEMORY_BLOCKS para TOTAL_BLOCKS
     return TOTAL_BLOCKS - fs.used_blocks;
 }
 
@@ -21,7 +20,6 @@ int check_disk_space() {
 void list_files() {
     print_section_header("ARQUIVOS NO DISCO");
     
-     // Cabeçalho da tabela
     char header[COL2_WIDTH];
     snprintf(header, COL2_WIDTH, "%-*s %*s %*s", 
              FILENAME_LEN, "NOME",
@@ -30,7 +28,6 @@ void list_files() {
     print_log_entry("TIPO", header);
     print_divider('-');
 
-     // Corpo da tabela
     for (int i = 0; i < MAX_FILES; i++) {
         if (fs.files[i].name[0] != '\0') {
             char file_info[COL2_WIDTH];
@@ -49,6 +46,7 @@ void list_files() {
 }
 
 
+
 void check_disk_usage() {
     printf("Uso do disco: %d/%d blocos (%.1f%%)\n",
            fs.used_blocks, TOTAL_BLOCKS,
@@ -57,21 +55,27 @@ void check_disk_usage() {
 
 void print_disk_block_map() {
     printf("Mapa de ocupação do disco por bloco:\n");
+    int blocks_per_line = 32;
+
     for (int blk = 0; blk < TOTAL_BLOCKS; blk++) {
+        if (blk > 0 && blk % blocks_per_line == 0) {
+            printf("\n");
+        }
+
         int found = 0;
         for (int i = 0; i < MAX_FILES; i++) {
             if (fs.files[i].name[0] != '\0') {
                 uint32_t start = fs.files[i].first_block;
                 uint32_t count = fs.files[i].block_count;
                 if ((uint32_t)blk >= start && (uint32_t)blk < start + count) {
-                    printf("%s ", fs.files[i].name);
+                    printf("# "); 
                     found = 1;
                     break;
                 }
             }
         }
         if (!found) {
-            printf("0 ");
+            printf(". ");
         }
     }
     printf("\n");

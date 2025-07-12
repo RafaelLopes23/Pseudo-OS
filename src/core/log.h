@@ -12,6 +12,6 @@
 void print_divider(char fill);
 void print_log_entry(const char *col1, const char *col2);
 void print_section_header(const char *title);
-void log_operation_result(int pid, const char *operation, const char *filename, int);
+void log_operation_result(int pid, const char *operation, const char *filename, int success, const char* details);
 
 #endif

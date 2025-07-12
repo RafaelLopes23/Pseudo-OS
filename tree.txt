@@ -1,0 +1,53 @@
+//ESTRUTURA DOS DIRETORIOS
+.
+├── .vscode
+│   ├── c_cpp_properties.json
+│   ├── launch.json
+│   └── settings.json
+├── Especificacao.txt
+├── LICENSE
+├── Makefile
+├── README.md
+├── examples
+│   ├── files.txt
+│   └── processes.txt
+├── include
+│   ├── log.h -> ../src/core/log.h
+│   └── shared
+│       ├── constants.h
+│       └── errors.h
+├── src
+│   ├── .vscode
+│   │   ├── c_cpp_properties.json
+│   │   ├── launch.json
+│   │   └── settings.json
+│   ├── core
+│   │   ├── log.c
+│   │   ├── log.h
+│   │   ├── main.c
+│   │   ├── system.h
+│   │   └── types.h
+│   ├── filesystem
+│   │   ├── fileops.c
+│   │   ├── fileops.h
+│   │   ├── filesystem.c
+│   │   └── filesystem.h
+│   ├── memory
+│   │   ├── memory.c
+│   │   ├── memory.h
+│   │   ├── resources.c
+│   │   └── resources.h
+│   └── process
+│       ├── dispatcher.c
+│       ├── dispatcher.h
+│       ├── process.c
+│       ├── process.h
+│       ├── scheduler.c
+│       └── scheduler.h
+├── tests
+│   ├── test_filesystem.c
+│   ├── test_memory.c
+│   └── test_process.c
+└── tree.txt
+
+11 directories, 38 files

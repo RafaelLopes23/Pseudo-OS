@@ -1,15 +1,15 @@
-// resources.h
 #ifndef RESOURCES_H
 #define RESOURCES_H
 
-// TODO: [Pessoa 2] Implementar gerenciamento de recursos E/S
+#include "../core/semaphore.h"
+#include "../../include/shared/constants.h"
 
-// Estruturas de dados para gerenciamento de recursos
+// Estrutura de dados para gerenciamento de recursos de E/S usando semáforos
 typedef struct {
-    int scanner_available; // 1 se disponível, 0 se em uso
-    int printers_available; // Contador de impressoras disponíveis
-    int modem_available; // 1 se disponível, 0 se em uso
-    int sata_drives_available; // Contador de drives SATA disponíveis
+    SimulatedSemaphore scanner_sem;
+    SimulatedSemaphore printer_sem;
+    SimulatedSemaphore modem_sem;
+    SimulatedSemaphore sata_drive_sem;
 } IOResources;
 
 extern IOResources io_resources;
@@ -17,13 +17,13 @@ extern IOResources io_resources;
 // Função para inicializar os recursos de E/S
 void init_io_resources(IOResources *resources);
 
-// Função para alocar um recurso de E/S
-int allocate_io_resource(IOResources *resources, const char *resource_type);
+// Função para tentar alocar um recurso de E/S. Retorna 0 em sucesso, 1 se bloqueado.
+int allocate_io_resource(PCB* process, const char *resource_type);
 
 // Função para liberar um recurso de E/S
-void release_io_resource(IOResources *resources, const char *resource_type);
+void release_io_resource(const char *resource_type);
 
-// Função para verificar a disponibilidade de um recurso de E/S
-int check_io_resource_availability(IOResources *resources, const char *resource_type);
+// Função para verificar a disponibilidade (usada para a verificação inicial)
+int check_io_resource_availability(const char *resource_type);
 
 #endif // RESOURCES_H
