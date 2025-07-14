@@ -18,8 +18,11 @@ typedef enum {
     PROCESS_READY,
     PROCESS_RUNNING,
     PROCESS_BLOCKED,
+    PROCESS_BACKGROUND, // Novo estado: em segundo plano
+    PROCESS_SUSPENDED,  // Novo estado: congelado na memória
     PROCESS_TERMINATED
 } ProcessState;
+
 
 // Estrutura de Controle de Processo (PCB)
 typedef struct {
@@ -41,6 +44,7 @@ typedef struct {
     int instruction_count;      // Contador de instruções executadas
     int quantum_remaining;      // Quantum restante (p/ processos usuário)
     bool has_started;           // Flag para indicar se o processo já foi escalonado
+    int time_in_background; // Contador para tempo em background
 } PCB;
 
 // Estrutura de fila de processos

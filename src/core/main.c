@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h> 
+#include <unistd.h>
+#include <stdbool.h>
 
 #include "../filesystem/filesystem.h"
 #include "../filesystem/fileops.h"
@@ -42,10 +43,13 @@ void start_main_loop() {
         if (current_process) {
             run_current_process();
         } else {
-            // Se não há processos prontos, mas ainda há processos no sistema (bloqueados)
-            // O sistema espera, permitindo que a liberação de recursos desbloqueie outros.
+            // Se não há processos prontos, o sistema apenas espera
+            // para não sobrecarregar a CPU com um loop vazio.
             sleep(1); 
         }
+        // A gestão de processos em background  é chamada a cada ciclo
+        // do loop, independentemente de a CPU estar ocupada ou não.
+        manage_background_processes();
     }
     printf("--- Loop Principal de Execução Terminado ---\n\n");
 }
@@ -136,17 +140,16 @@ int main(int argc, char *argv[]) {
     freopen("log.txt", "a", stderr);
 
     initialize_system();
-
     load_processes_from_file(processes_file);
-    
     start_main_loop();
 
     printf("\n--- Processando Operações de Arquivo ---\n");
     process_filesystem_operations(filesystem_file);
     
     print_disk_map();
-    
     shutdown_system();
+
+    log_simulation_outcome(true); //registar o sucesso da simulação
 
     return 0;
 }

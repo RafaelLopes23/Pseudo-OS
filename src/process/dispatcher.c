@@ -39,18 +39,17 @@ void run_current_process() {
         while (!is_process_finished(current_process)) {
             execute_process_instruction(current_process);
         }
-        destroy_process(current_process);
+        terminate_process(current_process); // usa a função centralizada
         current_process = NULL;
-        // Printar só destruição via return SIGINT dentro de destroy_process
     } else {
-        // Processos usuário executam por quantum
+        // Processos usuário executam por uma instrução
         execute_process_instruction(current_process);
 
         if (is_process_finished(current_process)) {
-            destroy_process(current_process);
+            terminate_process(current_process);
             current_process = NULL;
-            // demote ou liberação será logado dentro de destroy_process
         } else if (current_process->quantum_remaining <= 0) {
+            // Quantum esgotado, move para background
             demote_user_process(current_process);
             current_process = NULL;
         }

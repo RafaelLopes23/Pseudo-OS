@@ -41,7 +41,7 @@ PCB* create_process(int priority, int cpu_time, int memory_blocks,
     process->cpu_time = 0;
     process->total_cpu_time = cpu_time;
     process->memory_blocks = memory_blocks;
-    process->memory_offset = -1; // Inicia como -1 para indicar que não foi alocado
+    process->memory_offset = -1; 
     process->start_time = start_time;
     process->printer_code = printer_code;
     process->scanner_needed = scanner_needed;
@@ -50,6 +50,7 @@ PCB* create_process(int priority, int cpu_time, int memory_blocks,
     process->instruction_count = 0;
     process->quantum_remaining = (priority == 0) ? 0 : USER_PROCESS_QUANTUM;
     process->has_started = false;
+    process->time_in_background = 0;
 
     if (process_count < MAX_PROCESSES_PER_QUEUE * NUMBER_OF_PRIORITY_QUEUES) {
         process_table[process_count] = process;
@@ -173,24 +174,38 @@ bool process_was_loaded(int pid) {
     return false;
 }
 
-void destroy_process(PCB* process) {
+void release_all_resources(PCB* process) {
     if (process == NULL) return;
 
-    printf("-> Liberando recursos do processo PID %d...\n", process->pid);
-
+    printf("-> Liberando recursos de E/S do processo PID %d...\n", process->pid);
+    
     int is_real_time = (process->priority == 0);
 
-    if (process->memory_offset != -1) {
-        free_memory(process->memory_offset, process->memory_blocks);
-    }
-
+    // Desaloca os recursos de E/S (apenas se não for tempo real)
     if (!is_real_time) {
         if (process->scanner_needed) release_io_resource("scanner");
         if (process->printer_code > 0) release_io_resource("printer");
         if (process->modem_needed) release_io_resource("modem");
         if (process->disk_code > 0) release_io_resource("sata");
     }
+}
 
+void destroy_process(PCB* process) {
+    if (process == NULL) {
+        return;
+    }
+
+    printf("-> Iniciando destruição completa do processo PID %d...\n", process->pid);
+
+    // Libertar recursos de E/S primeiro
+    release_all_resources(process);
+
+    // Desaloca a memória que foi alocada para o processo
+    if (process->memory_offset != -1) { 
+        free_memory(process->memory_offset, process->memory_blocks);
+    }
+
+    // Remover processo da tabela global
     int found = 0;
     for (int i = 0; i < process_count; i++) {
         if (process_table[i] && process_table[i]->pid == process->pid) {
@@ -205,9 +220,17 @@ void destroy_process(PCB* process) {
         process_count--;
         process_table[process_count] = NULL;
     }
-
+    
     printf("P%d return SIGINT\n", process->pid);
     free(process);
+}
+
+void terminate_process(PCB* process) {
+    if (!process) return;
+
+    process->state = PROCESS_TERMINATED;
+    
+    destroy_process(process);
 }
 
 void execute_process_instruction(PCB* process) {
@@ -229,8 +252,17 @@ int is_process_finished(PCB* process) {
     return process && (process->cpu_time >= process->total_cpu_time);
 }
 
+// *** FUNÇÃO MODIFICADA PARA CORRIGIR O LOOP INFINITO ***
 int has_active_processes() {
-    return process_count > 0;
+    for (int i = 0; i < process_count; i++) {
+        if (process_table[i]) {
+            if (process_table[i]->state != PROCESS_TERMINATED &&
+                process_table[i]->state != PROCESS_SUSPENDED) {
+                return 1; // Encontrou um processo ativo (Ready, Running, Blocked, Background)
+            }
+        }
+    }
+    return 0; // Nenhum processo ativo encontrado, a simulação pode terminar.
 }
 
 void list_processes() {
@@ -247,6 +279,8 @@ void list_processes() {
                 case PROCESS_READY: state_str = "READY"; break;
                 case PROCESS_RUNNING: state_str = "RUNNING"; break;
                 case PROCESS_BLOCKED: state_str = "BLOCKED"; break;
+                case PROCESS_BACKGROUND: state_str = "BACKGROUND"; break;
+                case PROCESS_SUSPENDED: state_str = "SUSPENDED"; break;
                 case PROCESS_TERMINATED: state_str = "TERMINATED"; break;
                 default: state_str = "UNKNOWN"; break;
             }

@@ -2,22 +2,33 @@
 #include "../../include/shared/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "process.h"
 
 // Filas de prioridade globais
 static ProcessQueue priority_queues[NUMBER_OF_PRIORITY_QUEUES];
+static ProcessQueue background_queue;
+static ProcessQueue suspended_queue;
 static int scheduler_initialized = 0;
 
-// TODO: [Pessoa 1] Inicializar o escalonador
+// Inicializar o escalonador
 void init_scheduler() {
     for (int i = 0; i < NUMBER_OF_PRIORITY_QUEUES; i++) {
         priority_queues[i].front = 0;
         priority_queues[i].rear = -1;
         priority_queues[i].count = 0;
     }
+    background_queue.front = 0;
+    background_queue.rear = -1;
+    background_queue.count = 0;
+
+    suspended_queue.front = 0;
+    suspended_queue.rear = -1;
+    suspended_queue.count = 0;
+    
     scheduler_initialized = 1;
 }
 
-// TODO: [Pessoa 1] Implementar algoritmo FIFO para processos tempo real
+// FIFO para processos tempo real
 PCB* schedule_real_time_process() {
     if (!scheduler_initialized) init_scheduler();
 
@@ -25,7 +36,7 @@ PCB* schedule_real_time_process() {
 
     if (rt_queue->count == 0) return NULL;
 
-    // Remove o primeiro processo da fila (FIFO)
+    // Remover o primeiro processo da fila (FIFO)
     PCB* process = rt_queue->processes[rt_queue->front];
     rt_queue->front = (rt_queue->front + 1) % MAX_PROCESSES_PER_QUEUE;
     rt_queue->count--;
@@ -34,7 +45,7 @@ PCB* schedule_real_time_process() {
     return process;
 }
 
-// TODO: [Pessoa 1] Implementar algoritmo de escalonamento para processos de usuário
+// Algoritmo de escalonamento para processos de usuário
 PCB* schedule_user_process() {
     if (!scheduler_initialized) init_scheduler();
 
@@ -75,18 +86,56 @@ int add_process_to_queue(PCB* process) {
     return 0;
 }
 
-// TODO: [Pessoa 1] Implementar realimentação para processos de usuário
+// Movendo os processos para a fila de background
 void demote_user_process(PCB* process) {
     if (!process || process->priority == 0) return;
 
-    // Diminui prioridade (aumenta o valor numérico)
-    if (process->priority < PRIORITY_USER_3) {
-        process->priority++;
-    }
+    printf("-> Quantum esgotado para PID %d. Movendo para background.\n", process->pid);
+    process->state = PROCESS_BACKGROUND;
+    process->time_in_background = 0; // Reseta o contador
 
-    // Adiciona de volta à fila com nova prioridade
-    add_process_to_queue(process);
+    // Adicionando à fila de background
+    if (background_queue.count < MAX_PROCESSES_PER_QUEUE) {
+        background_queue.rear = (background_queue.rear + 1) % MAX_PROCESSES_PER_QUEUE;
+        background_queue.processes[background_queue.rear] = process;
+        background_queue.count++;
+    }
 }
+
+// Gerar a transição de background para suspenso
+void manage_background_processes() {
+    if (background_queue.count == 0) return;
+
+    int current_size = background_queue.count;
+    for (int i = 0; i < current_size; i++) {
+        PCB* process = background_queue.processes[background_queue.front];
+        background_queue.front = (background_queue.front + 1) % MAX_PROCESSES_PER_QUEUE;
+        background_queue.count--;
+
+        process->time_in_background++;
+
+        if (process->time_in_background > BACKGROUND_TIME_LIMIT) {
+            // Antes de suspender, liberta os recursos de E/S do processo.
+            printf("-> Limite de tempo em background atingido para PID %d. Liberando recursos antes de suspender.\n", process->pid);
+            release_all_resources(process);
+
+            // Agora, suspende o processo
+            process->state = PROCESS_SUSPENDED;
+            
+            if (suspended_queue.count < MAX_PROCESSES_PER_QUEUE) {
+                suspended_queue.rear = (suspended_queue.rear + 1) % MAX_PROCESSES_PER_QUEUE;
+                suspended_queue.processes[suspended_queue.rear] = process;
+                suspended_queue.count++;
+            }
+        } else {
+            // Se não for suspenso, volta para o fim da fila de background
+            background_queue.rear = (background_queue.rear + 1) % MAX_PROCESSES_PER_QUEUE;
+            background_queue.processes[background_queue.rear] = process;
+            background_queue.count++;
+        }
+    }
+}
+
 
 // TODO: [Pessoa 1] Implementar aging para evitar starvation
 void apply_aging() {

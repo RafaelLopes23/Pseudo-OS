@@ -1,7 +1,7 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-// TODO: Definir constantes para o sistema operacional
+// Definido as constantes para o sistema operacional
 
 // Número máximo de processos por fila
 #define MAX_PROCESSES_PER_QUEUE 1000
@@ -26,5 +26,7 @@
 #define NUMBER_OF_PRINTERS 2
 #define NUMBER_OF_MODEMS 1
 #define NUMBER_OF_SATA_DRIVES 2
+// Número de "ticks" que um processo pode ficar em background antes de ser suspenso
+#define BACKGROUND_TIME_LIMIT 5
 
 #endif // CONSTANTS_H

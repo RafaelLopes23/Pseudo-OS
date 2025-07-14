@@ -1,6 +1,8 @@
 #ifndef LOG_H
 #define LOG_H
 
+#include <stdbool.h>
+
 #define LOG_WIDTH     100  // Aumentado para 100 caracteres
 #define COL1_WIDTH    22   // Largura para a primeira coluna
 #define COL2_WIDTH    74   // Largura para a segunda coluna (LOG_WIDTH - COL1_WIDTH - 4)
@@ -13,5 +15,6 @@ void print_divider(char fill);
 void print_log_entry(const char *col1, const char *col2);
 void print_section_header(const char *title);
 void log_operation_result(int pid, const char *operation, const char *filename, int success, const char* details);
+void log_simulation_outcome(bool success); //função para o resultado final da simulação
 
 #endif

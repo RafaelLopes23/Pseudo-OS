@@ -1,13 +1,19 @@
 1024
-5
-arquivo1.txt, 0, 10
-arquivo2.txt, 10, 5
-arquivo3.txt, 15, 8
-arquivo4.txt, 23, 12
-arquivo5.txt, 35, 20
-0, 0, arquivo6.txt, 5
-1, 1, arquivo1.txt
-2, 0, arquivo7.txt, 2
-3, 1, arquivo3.txt
-4, 0, arquivo8.txt, 3
-6, 1, arquivo2.txt
+3
+# Ficheiros iniciais, pertencentes ao PID 0 (sistema)
+arquivo_sistema_1.txt, 0, 10
+arquivo_sistema_2.txt, 10, 5
+outro_arquivo.txt, 15, 8
+
+# Operações a serem executadas pelos processos
+# PID 10 cria um ficheiro com sucesso.
+10, 0, ficheiro_do_pid10.txt, 4
+
+# PID 10 apaga com sucesso o seu próprio ficheiro.
+10, 1, ficheiro_do_pid10.txt
+
+# PID 11 tenta apagar um ficheiro do sistema (do PID 0), deve falhar por permissão.
+11, 1, arquivo_sistema_1.txt
+
+# PID 6 (se conseguir executar) cria um ficheiro.
+6, 0, dados_pid6.txt, 15

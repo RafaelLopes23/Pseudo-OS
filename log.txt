@@ -1,0 +1,233 @@
+Inicializando o pseudo-SO...
+Módulo de processos inicializado.
+Sistema de arquivos inicializado.
+Sistema inicializado com sucesso.
+
+Carregando processos do arquivo: examples/processes.txt
+-> SUCESSO: Recursos alocados para o processo PID 0.
+-> SUCESSO: Recursos alocados para o processo PID 1.
+-> SUCESSO: Recursos alocados para o processo PID 2.
+-> SUCESSO: Recursos alocados para o processo PID 3.
+-> SUCESSO: Recursos alocados para o processo PID 4.
+-> SUCESSO: Recursos alocados para o processo PID 5.
+-> SUCESSO: Recursos alocados para o processo PID 6.
+-> BLOQUEADO: Scanner indisponível para o processo PID 7.
+-> Processo PID 7 movido para a fila de espera do recurso.
+-> SUCESSO: Recursos alocados para o processo PID 8.
+-> SUCESSO: Recursos alocados para o processo PID 9.
+-> SUCESSO: Recursos alocados para o processo PID 10.
+-> SUCESSO: Recursos alocados para o processo PID 11.
+Total de processos carregados (prontos ou bloqueados): 12
+
+--- Iniciando Loop Principal de Execução ---
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 0              │ Offset: 0 | Blocks: 64                                                  │
+│ Priority: 0         │ Time: 0/5                                                               │
+│ Resources           │ P:0 S:0 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 0 =>
+P0 STARTED
+-> Iniciando destruição completa do processo PID 0...
+-> Liberando recursos de E/S do processo PID 0...
+P0 return SIGINT
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 3              │ Offset: 128 | Blocks: 16                                                │
+│ Priority: 1         │ Time: 0/6                                                               │
+│ Resources           │ P:0 S:1 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 3 =>
+P3 STARTED
+-> Quantum esgotado para PID 3. Movendo para background.
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 4              │ Offset: 144 | Blocks: 16                                                │
+│ Priority: 1         │ Time: 0/5                                                               │
+│ Resources           │ P:0 S:0 M:1 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 4 =>
+P4 STARTED
+-> Quantum esgotado para PID 4. Movendo para background.
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 1              │ Offset: 64 | Blocks: 32                                                 │
+│ Priority: 2         │ Time: 0/10                                                              │
+│ Resources           │ P:1 S:0 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 1 =>
+P1 STARTED
+-> Quantum esgotado para PID 1. Movendo para background.
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 2              │ Offset: 96 | Blocks: 32                                                 │
+│ Priority: 2         │ Time: 0/4                                                               │
+│ Resources           │ P:1 S:0 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 2 =>
+P2 STARTED
+-> Quantum esgotado para PID 2. Movendo para background.
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 6              │ Offset: 416 | Blocks: 64                                                │
+│ Priority: 2         │ Time: 0/7                                                               │
+│ Resources           │ P:0 S:0 M:0 D:2                                                         │
+----------------------------------------------------------------------------------------------------
+process 6 =>
+P6 STARTED
+-> Quantum esgotado para PID 6. Movendo para background.
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 10             │ Offset: 512 | Blocks: 16                                                │
+│ Priority: 2         │ Time: 0/3                                                               │
+│ Resources           │ P:0 S:0 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 10 =>
+P10 STARTED
+-> Quantum esgotado para PID 10. Movendo para background.
+-> Limite de tempo em background atingido para PID 3. Liberando recursos antes de suspender.
+-> Liberando recursos de E/S do processo PID 3...
+-> Processo PID 7 desbloqueado e movido para a fila de prontos.
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 7              │ Offset: 480 | Blocks: 16                                                │
+│ Priority: 1         │ Time: 0/4                                                               │
+│ Resources           │ P:0 S:1 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 7 =>
+P7 STARTED
+-> Quantum esgotado para PID 7. Movendo para background.
+-> Limite de tempo em background atingido para PID 4. Liberando recursos antes de suspender.
+-> Liberando recursos de E/S do processo PID 4...
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 5              │ Offset: 160 | Blocks: 256                                               │
+│ Priority: 3         │ Time: 0/8                                                               │
+│ Resources           │ P:0 S:0 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 5 =>
+P5 STARTED
+-> Quantum esgotado para PID 5. Movendo para background.
+-> Limite de tempo em background atingido para PID 1. Liberando recursos antes de suspender.
+-> Liberando recursos de E/S do processo PID 1...
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 8              │ Offset: 496 | Blocks: 8                                                 │
+│ Priority: 3         │ Time: 0/1                                                               │
+│ Resources           │ P:0 S:0 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 8 =>
+P8 STARTED
+-> Iniciando destruição completa do processo PID 8...
+-> Liberando recursos de E/S do processo PID 8...
+P8 return SIGINT
+-> Limite de tempo em background atingido para PID 2. Liberando recursos antes de suspender.
+-> Liberando recursos de E/S do processo PID 2...
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 9              │ Offset: 504 | Blocks: 8                                                 │
+│ Priority: 3         │ Time: 0/1                                                               │
+│ Resources           │ P:0 S:0 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 9 =>
+P9 STARTED
+-> Iniciando destruição completa do processo PID 9...
+-> Liberando recursos de E/S do processo PID 9...
+P9 return SIGINT
+-> Limite de tempo em background atingido para PID 6. Liberando recursos antes de suspender.
+-> Liberando recursos de E/S do processo PID 6...
+====================================================================================================
+╞ DISPATCHER                                                                                       ╡
+====================================================================================================
+│ PID: 11             │ Offset: 528 | Blocks: 16                                                │
+│ Priority: 3         │ Time: 0/2                                                               │
+│ Resources           │ P:0 S:0 M:0 D:0                                                         │
+----------------------------------------------------------------------------------------------------
+process 11 =>
+P11 STARTED
+-> Quantum esgotado para PID 11. Movendo para background.
+-> Limite de tempo em background atingido para PID 10. Liberando recursos antes de suspender.
+-> Liberando recursos de E/S do processo PID 10...
+-> Limite de tempo em background atingido para PID 7. Liberando recursos antes de suspender.
+-> Liberando recursos de E/S do processo PID 7...
+-> Limite de tempo em background atingido para PID 5. Liberando recursos antes de suspender.
+-> Liberando recursos de E/S do processo PID 5...
+-> Limite de tempo em background atingido para PID 11. Liberando recursos antes de suspender.
+-> Liberando recursos de E/S do processo PID 11...
+--- Loop Principal de Execução Terminado ---
+
+
+--- Processando Operações de Arquivo ---
+│ PID 10              │ ✅ [SUCCESS] criar: 'ficheiro_do_pid10.txt' - 4 blocos                 │
+----------------------------------------------------------------------------------------------------
+│ PID 10              │ ✅ [SUCCESS] remover: 'ficheiro_do_pid10.txt' - 4 blocos liberados     │
+----------------------------------------------------------------------------------------------------
+│ PID 11              │ ❌ [ERROR] remover: 'arquivo_sistema_1.txt' - Permissão Negada (Dono: │
+│                     │  PID 0)                                                                 │
+----------------------------------------------------------------------------------------------------
+│ PID 6               │ ✅ [SUCCESS] criar: 'dados_pid6.txt' - 15 blocos                       │
+----------------------------------------------------------------------------------------------------
+
+--- Estado Final do Disco ---
+====================================================================================================
+╞ ARQUIVOS NO DISCO                                                                                ╡
+====================================================================================================
+│ TIPO                │ NOME                               BLOCOS       DONO                    │
+----------------------------------------------------------------------------------------------------
+│ 📄 ARQ            │ arquivo_sistema_1.txt                  10          0                    │
+│ 📄 ARQ            │ arquivo_sistema_2.txt                   5          0                    │
+│ 📄 ARQ            │ dados_pid6.txt                         15          6                    │
+====================================================================================================
+Uso do disco: 30/1024 blocos (2.9%)
+Mapa de ocupação do disco por bloco:
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+
+Desligando o pseudo-SO...
+Sistema desligado.
+====================================================================================================
+╞ RESULTADO FINAL                                                                                  ╡
+====================================================================================================
+│ 🏆                │ Simulação Concluída com Sucesso                                      │
+====================================================================================================
