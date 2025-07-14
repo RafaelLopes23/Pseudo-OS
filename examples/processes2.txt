@@ -1,0 +1,13 @@
+#<tempo_ini>, <prio>, <t_cpu>, <mem>, <req_imp>, <req_scan>, <req_mod>, <req_disc>, <perm_imp>, <perm_scan>, <perm_mod>, <perm_disc>
+
+# Processo de sistema, tem todas as permissões mas não pede nada.
+0, 0, 5, 64, 0, 0, 0, 0, 1, 1, 1, 1
+
+# Processo 1: Pede uma impressora e TEM permissão.
+1, 2, 10, 32, 1, 0, 0, 0, 1, 0, 0, 0
+
+# Processo 2: Pede uma impressora mas NÃO TEM permissão. DEVE FALHAR.
+2, 2, 4, 32, 1, 0, 0, 0, 0, 1, 1, 1
+
+# Processo 3: Pede scanner e modem, e tem permissão para ambos.
+3, 1, 6, 16, 0, 1, 1, 0, 0, 1, 1, 0
