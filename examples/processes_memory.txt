@@ -1,0 +1,11 @@
+#<tempo_ini>, <prio>, <t_cpu>, <mem>, <req_imp>, <req_scan>, <req_mod>, <req_disc>, <perm_imp>, <perm_scan>, <perm_mod>, <perm_disc>
+# 8 processos que pedem 128 blocos cada = 1024 blocos. Vai falhar.
+0, 1, 10, 128, 0,0,0,0, 1,1,1,1
+0, 2, 10, 128, 0,0,0,0, 1,1,1,1
+0, 3, 10, 128, 0,0,0,0, 1,1,1,1
+0, 1, 10, 128, 0,0,0,0, 1,1,1,1
+0, 2, 10, 128, 0,0,0,0, 1,1,1,1
+0, 3, 10, 128, 0,0,0,0, 1,1,1,1
+0, 1, 10, 128, 0,0,0,0, 1,1,1,1
+# Este último processo irá falhar na alocação de memória.
+1, 2, 10, 128, 0,0,0,0, 1,1,1,1
