@@ -1,0 +1,6 @@
+# Bloquear todos os arquivos .o
+*.o
+
+# Se precisar bloquear outros tipos (opcional)
+
+/pseudo-os  # Se não quiser comitar este arquivo específico
